@@ -1,0 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap");
+@import "tailwindcss";
+@import "../../default_shadcn_theme.css";
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background: #0a0a0a;
+  color: #ffffff;
+}
