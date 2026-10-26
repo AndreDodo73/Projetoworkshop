@@ -1,10 +1,11 @@
 import { RouterProvider } from "react-router";
 import { Toaster } from "sonner";
 import { router } from "./routes";
+import { AcademyProvider } from "./domain/store";
 
 export default function App() {
   return (
-    <>
+    <AcademyProvider>
       <RouterProvider router={router} />
       <Toaster
         position="top-right"
@@ -18,6 +19,6 @@ export default function App() {
           },
         }}
       />
-    </>
+    </AcademyProvider>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, ReactNode } from "react";
+import { useEffect, useState, ReactNode } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Users,
@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router";
+import { useAcademy } from "../domain/store";
 import imgForgeeLogo from "../../imports/Dashboard-2/234239702fd000ad91d5040296534366f62ba051.png";
 
 interface AdminLayoutProps {
@@ -32,6 +33,7 @@ function SidebarContent({
 }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAcademy();
 
   const isActive = (path: string) => {
     if (path === "#") return false;
@@ -171,7 +173,7 @@ function SidebarContent({
           </div>
         </div>
         <motion.button
-          onClick={() => { navigate("/login-admin"); onNavClick?.(); }}
+          onClick={() => { logout(); navigate("/login-admin"); onNavClick?.(); }}
           className="w-full flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-left"
           style={{ color: "#6B6B6B" }}
           whileHover={{ backgroundColor: "#1A1A1A", color: "#FFFFFF" }}
@@ -194,9 +196,17 @@ function SidebarContent({
 
 export function AdminLayout({ children }: AdminLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, ready } = useAcademy();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (ready && !user) navigate("/login-admin", { replace: true });
+  }, [ready, user, navigate]);
+
+  if (!ready || !user) return null;
 
   return (
-    <div className="flex min-h-screen bg-[#090909]">
+    <div className="forge flex min-h-screen w-full bg-[#090909]">
 
       {/* ── Desktop Sidebar (always visible on lg+) ── */}
       <aside
