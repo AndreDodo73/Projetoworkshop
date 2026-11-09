@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowLeft,
@@ -11,6 +12,8 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { AdminLayout } from "../components/AdminLayout";
+import { loadPlans, registerStudent, type PlanRecord } from "../../lib/academy";
+import { formatPlanPrice } from "../../lib/values";
 
 // ─── Shared Components ────────────────────────────────────────────────────────
 
@@ -58,7 +61,8 @@ function DSInput({
           borderRadius: 6,
           padding: "11px 14px",
           fontFamily: "'Inter', sans-serif",
-          fontSize: 14,
+          fontSize: 16,
+          minHeight: 48,
           color: "#F2F2F2",
           outline: "none",
           width: "100%",
@@ -117,7 +121,8 @@ function DSSelect({
             borderRadius: 6,
             padding: "11px 36px 11px 14px",
             fontFamily: "'Inter', sans-serif",
-            fontSize: 14,
+            fontSize: 16,
+          minHeight: 48,
             color: value === "" ? "#606060" : "#F2F2F2",
             outline: "none",
             width: "100%",
@@ -252,7 +257,7 @@ function SectionHeader({
           style={{
             fontFamily: "'Oswald', sans-serif",
             fontWeight: 700,
-            fontSize: 14,
+            fontSize: 16,
             color: "#FFFFFF",
           }}
         >
@@ -344,6 +349,8 @@ function ObjectiveButton({
 export function NovoAluno() {
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [plans, setPlans] = useState<PlanRecord[]>([]);
 
   // ── Section 1: Dados Pessoais
   const [nome, setNome] = useState("");
@@ -403,6 +410,18 @@ export function NovoAluno() {
   const [medidas, setMedidas] = useState("");
 
   useEffect(() => {
+    let active = true;
+    loadPlans()
+      .then((plans) => {
+        if (active) setPlans(plans);
+      })
+      .catch(() => toast.error("Não foi possível carregar os planos."));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
     const p = parseFloat(peso);
     const a = parseFloat(altura) / 100;
     if (p > 0 && a > 0) {
@@ -421,7 +440,7 @@ export function NovoAluno() {
 
   // ── Section 7: Termo
   const [aceitaTermo, setAceitaTermo] = useState(false);
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toLocaleDateString("sv-SE");
 
   const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -435,12 +454,40 @@ export function NovoAluno() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      navigate("/alunos");
-    }, 1800);
+    if (!aceitaTermo || saving) return;
+    const required = [
+      nome, dataNasc, cpf, rg, sexo, estadoCivil, profissao, telefone, email, endereco,
+      contatoEmerg, telEmerg, objetivo, treinouAntes, vezesSemana, tipoPlano, valorPlano,
+      dataInicio, dataVenc, formaPgto,
+    ];
+    if (required.some((value) => !value.trim())) {
+      toast.error("Preencha os campos obrigatórios marcados com *.");
+      return;
+    }
+    if (dataVenc < dataInicio) {
+      toast.error("A data de vencimento precisa ser igual ou posterior à data de início.");
+      return;
+    }
+
+    const planoEscolhido = plans.find((plan) => plan.name === tipoPlano);
+
+    setSaving(true);
+    try {
+      await registerStudent({
+        nome, dataNasc, cpf, rg, sexo, estadoCivil, profissao, telefone, email, endereco,
+        contatoEmerg, telEmerg, foto: fotoAluno, saude, parq, objetivo, treinouAntes,
+        tempoPratica, vezesSemana, horarioPref, peso, altura, gordura, medidas, tipoPlano,
+        planoId: planoEscolhido?.id,
+        valorPlano, dataInicio, dataVenc, formaPgto,
+      });
+      setSubmitted(true);
+      setTimeout(() => navigate("/alunos"), 1800);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Não foi possível salvar o aluno.");
+      setSaving(false);
+    }
   };
 
   return (
@@ -1007,7 +1054,8 @@ export function NovoAluno() {
                           borderRadius: 6,
                           padding: "11px 14px",
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: 14,
+                          fontSize: 16,
+          minHeight: 48,
                           color: imc ? "#E8400A" : "#3A3A3A",
                           fontWeight: imc ? 600 : 400,
                         }}
@@ -1045,7 +1093,8 @@ export function NovoAluno() {
                         borderRadius: 6,
                         padding: "11px 14px",
                         fontFamily: "'Inter', sans-serif",
-                        fontSize: 14,
+                        fontSize: 16,
+          minHeight: 48,
                         color: "#F2F2F2",
                         outline: "none",
                         width: "100%",
@@ -1071,9 +1120,13 @@ export function NovoAluno() {
                     <DSSelect
                       label="Tipo de Plano"
                       required
-                      options={["Mensal Basic", "Mensal Premium", "Mensal Elite", "Trimestral", "Semestral", "Anual"]}
+                      options={plans.map((plan) => plan.name)}
                       value={tipoPlano}
-                      onChange={setTipoPlano}
+                      onChange={(name) => {
+                        setTipoPlano(name);
+                        const plan = plans.find((item) => item.name === name);
+                        if (plan) setValorPlano(formatPlanPrice(plan.price));
+                      }}
                     />
                     <DSInput
                       label="Valor (R$)"
@@ -1221,7 +1274,7 @@ export function NovoAluno() {
                       border: aceitaTermo ? "none" : "0.833px solid #2A2A2A",
                       cursor: aceitaTermo ? "pointer" : "not-allowed",
                     }}
-                    disabled={!aceitaTermo}
+                    disabled={!aceitaTermo || saving}
                     onMouseEnter={(e) => {
                       if (aceitaTermo) (e.currentTarget as HTMLElement).style.background = "#FF4D0D";
                     }}
@@ -1230,7 +1283,7 @@ export function NovoAluno() {
                     }}
                   >
                     <Save size={16} />
-                    Registrar Aluno
+                    {saving ? "Salvando..." : "Registrar Aluno"}
                   </button>
                 </SectionCard>
               </motion.div>

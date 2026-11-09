@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router";
+import { RequireStaff } from "../lib/auth";
 import { Layout } from "./components/Layout";
 import { Home } from "./pages/Home";
 import { LoginAdmin } from "./pages/LoginAdmin";
@@ -22,27 +23,14 @@ export const router = createBrowserRouter([
     Component: LoginAdmin,
   },
   {
-    path: "/dashboard",
-    Component: Dashboard,
-  },
-  {
-    path: "/novo-aluno",
-    Component: NovoAluno,
-  },
-  {
-    path: "/alunos",
-    Component: Alunos,
-  },
-  {
-    path: "/check-ins",
-    Component: CheckIns,
-  },
-  {
-    path: "/modo-recepcao",
-    Component: ModoRecepcao,
-  },
-  {
-    path: "/configuracoes",
-    Component: Configuracoes,
+    Component: RequireStaff,
+    children: [
+      { path: "/dashboard", Component: Dashboard },
+      { path: "/novo-aluno", Component: NovoAluno },
+      { path: "/alunos", Component: Alunos },
+      { path: "/check-ins", Component: CheckIns },
+      { path: "/modo-recepcao", Component: ModoRecepcao },
+      { path: "/configuracoes", Component: Configuracoes },
+    ],
   },
 ]);

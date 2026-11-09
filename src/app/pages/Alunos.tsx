@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   Search,
@@ -16,123 +17,10 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { AdminLayout } from "../components/AdminLayout";
-import imgJoaoSilva from "../../imports/Alunos/81e581e8bdbf8c9f2fa02e4c20dce774b1a1bb76.png";
-import imgCarlosOliveira from "../../imports/Alunos/4631e0b3856fc2d697783d063af0506770940150.png";
-import imgMariaSantos from "../../imports/Alunos/c370e1db29c9956574be3ed78df1b2c14bcdb239.png";
-import imgAnaCosta from "../../imports/Alunos/e243fca66b972890241de9a6542eedb4acdb0d0f.png";
-import imgBeatrizLima from "../../imports/Alunos/a8d9836506bb678008af0be8a848b247e3386b00.png";
+import { listStudents, type PaymentView, type StudentView } from "../../lib/academy";
 
-// ─── Types & Mock Data ────────────────────────────────────────────────────────
-
-type Student = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  plan: "BASIC" | "PREMIUM" | "ELITE";
-  status: "Em dia" | "Vencendo" | "Em atraso";
-  enrollmentDate: string;
-  lastCheckIn: string;
-  totalCheckIns: number;
-  avatar: string;
-  isActive: boolean;
-  payments: Payment[];
-};
-
-type Payment = {
-  date: string;
-  status: "Pago" | "Atrasado" | "Pendente";
-  method: string;
-  amount: number;
-};
-
-const mockStudents: Student[] = [
-  {
-    id: "#5678",
-    name: "João Silva",
-    email: "joao@email.com",
-    phone: "(11) 98765-1234",
-    plan: "BASIC",
-    status: "Em atraso",
-    enrollmentDate: "09/03/2024",
-    lastCheckIn: "2026-02-20",
-    totalCheckIns: 54,
-    avatar: imgJoaoSilva,
-    isActive: true,
-    payments: [
-      { date: "09/02/2026", status: "Atrasado", method: "Boleto", amount: 89.9 },
-      { date: "09/01/2026", status: "Pago", method: "PIX", amount: 89.9 },
-    ],
-  },
-  {
-    id: "#3456",
-    name: "Carlos Oliveira",
-    email: "carlos@email.com",
-    phone: "(11) 91234-5678",
-    plan: "PREMIUM",
-    status: "Vencendo",
-    enrollmentDate: "31/01/2024",
-    lastCheckIn: "2026-04-05",
-    totalCheckIns: 142,
-    avatar: imgCarlosOliveira,
-    isActive: true,
-    payments: [
-      { date: "31/03/2026", status: "Pendente", method: "Cartão", amount: 129.9 },
-      { date: "31/02/2026", status: "Pago", method: "PIX", amount: 129.9 },
-    ],
-  },
-  {
-    id: "#1234",
-    name: "Maria Santos",
-    email: "maria@email.com",
-    phone: "(11) 99876-5432",
-    plan: "PREMIUM",
-    status: "Em dia",
-    enrollmentDate: "14/01/2024",
-    lastCheckIn: "2026-04-10",
-    totalCheckIns: 189,
-    avatar: imgMariaSantos,
-    isActive: true,
-    payments: [
-      { date: "14/04/2026", status: "Pago", method: "PIX", amount: 129.9 },
-      { date: "14/03/2026", status: "Pago", method: "PIX", amount: 129.9 },
-    ],
-  },
-  {
-    id: "#9012",
-    name: "Ana Costa",
-    email: "ana@email.com",
-    phone: "(11) 97654-3210",
-    plan: "ELITE",
-    status: "Em dia",
-    enrollmentDate: "19/11/2023",
-    lastCheckIn: "2026-04-11",
-    totalCheckIns: 298,
-    avatar: imgAnaCosta,
-    isActive: true,
-    payments: [
-      { date: "19/04/2026", status: "Pago", method: "Débito Automático", amount: 189.9 },
-      { date: "19/03/2026", status: "Pago", method: "Débito Automático", amount: 189.9 },
-    ],
-  },
-  {
-    id: "#7890",
-    name: "Beatriz Lima",
-    email: "beatriz@email.com",
-    phone: "(11) 96543-2109",
-    plan: "BASIC",
-    status: "Em atraso",
-    enrollmentDate: "04/08/2023",
-    lastCheckIn: "2026-03-15",
-    totalCheckIns: 87,
-    avatar: imgBeatrizLima,
-    isActive: true,
-    payments: [
-      { date: "04/04/2026", status: "Atrasado", method: "Boleto", amount: 89.9 },
-      { date: "04/03/2026", status: "Pago", method: "PIX", amount: 89.9 },
-    ],
-  },
-];
+type Student = StudentView;
+type Payment = PaymentView;
 
 // ─── Header Component ─────────────────────────────────────────────────────────
 
@@ -264,6 +152,7 @@ function StudentCard({ student, onClick }: { student: Student; onClick: () => vo
     "Em dia": "#4ADE80",
     Vencendo: "#FACC15",
     "Em atraso": "#E8271A",
+    "Sem plano": "#A8A8A8",
   };
 
   return (
@@ -395,13 +284,27 @@ function StudentProfile({ student, onBack }: { student: Student; onBack: () => v
                     fontFamily: "'Inter', sans-serif",
                   }}
                 >
-                  ATIVO
+                  {student.isActive ? "ATIVO" : "INATIVO"}
                 </span>
                 <span
                   className="px-2.5 py-1 rounded-full text-xs font-medium"
                   style={{
-                    background: student.status === "Em atraso" ? "rgba(232, 39, 26, 0.1)" : "rgba(34, 197, 94, 0.1)",
-                    color: student.status === "Em atraso" ? "#E8271A" : "#22C55E",
+                    background:
+                      student.status === "Em atraso"
+                        ? "rgba(232, 39, 26, 0.1)"
+                        : student.status === "Vencendo"
+                          ? "rgba(250, 204, 21, 0.1)"
+                          : student.status === "Sem plano"
+                            ? "rgba(168, 168, 168, 0.1)"
+                            : "rgba(34, 197, 94, 0.1)",
+                    color:
+                      student.status === "Em atraso"
+                        ? "#E8271A"
+                        : student.status === "Vencendo"
+                          ? "#FACC15"
+                          : student.status === "Sem plano"
+                            ? "#A8A8A8"
+                            : "#22C55E",
                     fontFamily: "'Inter', sans-serif",
                   }}
                 >
@@ -526,6 +429,7 @@ function PaymentItem({ payment }: { payment: Payment }) {
     Pago: { bg: "rgba(34, 197, 94, 0.1)", color: "#22C55E" },
     Atrasado: { bg: "rgba(232, 39, 26, 0.1)", color: "#E8271A" },
     Pendente: { bg: "rgba(250, 204, 21, 0.1)", color: "#FACC15" },
+    Cancelado: { bg: "rgba(168, 168, 168, 0.1)", color: "#A8A8A8" },
   };
 
   const config = statusConfig[payment.status];
@@ -565,8 +469,25 @@ function PaymentItem({ payment }: { payment: Payment }) {
 export function Alunos() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredStudents = mockStudents.filter(
+  useEffect(() => {
+    let active = true;
+    listStudents()
+      .then((rows) => {
+        if (active) setStudents(rows);
+      })
+      .catch((error: Error) => toast.error(error.message))
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const filteredStudents = students.filter(
     (student) =>
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -591,6 +512,16 @@ export function Alunos() {
                 <FilterBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
 
                 <div className="mt-6 flex flex-col gap-3">
+                  {loading && (
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#606060" }}>
+                      Carregando alunos...
+                    </p>
+                  )}
+                  {!loading && filteredStudents.length === 0 && (
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#606060" }}>
+                      Nenhum aluno cadastrado.
+                    </p>
+                  )}
                   {filteredStudents.map((student) => (
                     <StudentCard
                       key={student.id}

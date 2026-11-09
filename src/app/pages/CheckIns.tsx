@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 import {
   Sun,
   UserPlus,
@@ -14,176 +15,10 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { AdminLayout } from "../components/AdminLayout";
-import imgMariaSantos from "../../imports/CheckIns/c370e1db29c9956574be3ed78df1b2c14bcdb239.png";
-import imgJoaoSilva from "../../imports/CheckIns/81e581e8bdbf8c9f2fa02e4c20dce774b1a1bb76.png";
-import imgCarlosOliveira from "../../imports/CheckIns/4631e0b3856fc2d697783d063af0506770940150.png";
-import imgAnaCosta from "../../imports/CheckIns/e243fca66b972890241de9a6542eedb4acdb0d0f.png";
+import { listCheckIns, type CheckInView } from "../../lib/academy";
 
-// ─── Types & Mock Data ────────────────────────────────────────────────────────
+type CheckIn = CheckInView;
 
-type CheckIn = {
-  id: string;
-  studentName: string;
-  studentAvatar: string;
-  financialStatus: "Em dia" | "Vencendo" | "Em atraso";
-  plan: "BASIC" | "PREMIUM" | "ELITE";
-  date: string;
-  time: string;
-  timestamp: Date;
-};
-
-const mockCheckIns: CheckIn[] = [
-  {
-    id: "1",
-    studentName: "Maria Santos",
-    studentAvatar: imgMariaSantos,
-    financialStatus: "Em dia",
-    plan: "PREMIUM",
-    date: "22/02/2026",
-    time: "18:45",
-    timestamp: new Date("2026-02-22T18:45:00"),
-  },
-  {
-    id: "2",
-    studentName: "João Silva",
-    studentAvatar: imgJoaoSilva,
-    financialStatus: "Em atraso",
-    plan: "BASIC",
-    date: "22/02/2026",
-    time: "18:30",
-    timestamp: new Date("2026-02-22T18:30:00"),
-  },
-  {
-    id: "3",
-    studentName: "Carlos Oliveira",
-    studentAvatar: imgCarlosOliveira,
-    financialStatus: "Vencendo",
-    plan: "PREMIUM",
-    date: "22/02/2026",
-    time: "18:15",
-    timestamp: new Date("2026-02-22T18:15:00"),
-  },
-  {
-    id: "4",
-    studentName: "Maria Santos",
-    studentAvatar: imgMariaSantos,
-    financialStatus: "Em dia",
-    plan: "PREMIUM",
-    date: "22/02/2026",
-    time: "17:50",
-    timestamp: new Date("2026-02-22T17:50:00"),
-  },
-  {
-    id: "5",
-    studentName: "Ana Costa",
-    studentAvatar: imgAnaCosta,
-    financialStatus: "Em dia",
-    plan: "ELITE",
-    date: "22/02/2026",
-    time: "17:30",
-    timestamp: new Date("2026-02-22T17:30:00"),
-  },
-  {
-    id: "6",
-    studentName: "Maria Santos",
-    studentAvatar: imgMariaSantos,
-    financialStatus: "Em dia",
-    plan: "PREMIUM",
-    date: "22/02/2026",
-    time: "16:45",
-    timestamp: new Date("2026-02-22T16:45:00"),
-  },
-  {
-    id: "7",
-    studentName: "João Silva",
-    studentAvatar: imgJoaoSilva,
-    financialStatus: "Em atraso",
-    plan: "BASIC",
-    date: "22/02/2026",
-    time: "15:20",
-    timestamp: new Date("2026-02-22T15:20:00"),
-  },
-  {
-    id: "8",
-    studentName: "Carlos Oliveira",
-    studentAvatar: imgCarlosOliveira,
-    financialStatus: "Vencendo",
-    plan: "PREMIUM",
-    date: "22/02/2026",
-    time: "14:30",
-    timestamp: new Date("2026-02-22T14:30:00"),
-  },
-  {
-    id: "9",
-    studentName: "Maria Santos",
-    studentAvatar: imgMariaSantos,
-    financialStatus: "Em dia",
-    plan: "PREMIUM",
-    date: "22/02/2026",
-    time: "12:15",
-    timestamp: new Date("2026-02-22T12:15:00"),
-  },
-  {
-    id: "10",
-    studentName: "Ana Costa",
-    studentAvatar: imgAnaCosta,
-    financialStatus: "Em dia",
-    plan: "ELITE",
-    date: "22/02/2026",
-    time: "11:00",
-    timestamp: new Date("2026-02-22T11:00:00"),
-  },
-  {
-    id: "11",
-    studentName: "João Silva",
-    studentAvatar: imgJoaoSilva,
-    financialStatus: "Em atraso",
-    plan: "BASIC",
-    date: "22/02/2026",
-    time: "10:30",
-    timestamp: new Date("2026-02-22T10:30:00"),
-  },
-  {
-    id: "12",
-    studentName: "Carlos Oliveira",
-    studentAvatar: imgCarlosOliveira,
-    financialStatus: "Vencendo",
-    plan: "PREMIUM",
-    date: "22/02/2026",
-    time: "09:45",
-    timestamp: new Date("2026-02-22T09:45:00"),
-  },
-  {
-    id: "13",
-    studentName: "Maria Santos",
-    studentAvatar: imgMariaSantos,
-    financialStatus: "Em dia",
-    plan: "PREMIUM",
-    date: "22/02/2026",
-    time: "08:30",
-    timestamp: new Date("2026-02-22T08:30:00"),
-  },
-  {
-    id: "14",
-    studentName: "Maria Santos",
-    studentAvatar: imgMariaSantos,
-    financialStatus: "Em dia",
-    plan: "PREMIUM",
-    date: "22/02/2026",
-    time: "07:15",
-    timestamp: new Date("2026-02-22T07:15:00"),
-  },
-  {
-    id: "15",
-    studentName: "João Silva",
-    studentAvatar: imgJoaoSilva,
-    financialStatus: "Em atraso",
-    plan: "BASIC",
-    date: "22/02/2026",
-    time: "06:45",
-    timestamp: new Date("2026-02-22T06:45:00"),
-  },
-];
 
 // ─── Header Component ─────────────────────────────────────────────────────────
 
@@ -374,6 +209,7 @@ function CheckInItem({ checkIn, index }: { checkIn: CheckIn; index: number }) {
     "Em dia": "#4ADE80",
     Vencendo: "#FACC15",
     "Em atraso": "#E8271A",
+    "Sem plano": "#A8A8A8",
   };
 
   return (
@@ -460,13 +296,63 @@ function CheckInItem({ checkIn, index }: { checkIn: CheckIn; index: number }) {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
+function periodStart(period: "Hoje" | "Semana" | "Mês") {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  if (period === "Semana") {
+    const day = start.getDay();
+    start.setDate(start.getDate() - (day === 0 ? 6 : day - 1));
+  }
+  if (period === "Mês") start.setDate(1);
+  return start;
+}
+
+function peakHour(rows: CheckIn[]) {
+  if (rows.length === 0) return "—";
+  const counts = new Map<number, number>();
+  for (const row of rows) {
+    const hour = row.timestamp.getHours();
+    counts.set(hour, (counts.get(hour) ?? 0) + 1);
+  }
+  const hour = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0] - b[0])[0][0];
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${pad(hour)}:00-${pad((hour + 1) % 24)}:00`;
+}
+
 export function CheckIns() {
   const [searchTerm, setSearchTerm] = useState("");
   const [periodFilter, setPeriodFilter] = useState<"Hoje" | "Semana" | "Mês">("Hoje");
+  const [checkIns, setCheckIns] = useState<CheckIn[]>([]);
 
-  const filteredCheckIns = mockCheckIns.filter((checkIn) =>
-    checkIn.studentName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    let active = true;
+    listCheckIns()
+      .then((rows) => {
+        if (active) setCheckIns(rows);
+      })
+      .catch((error: Error) => toast.error(error.message));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const metrics = useMemo(() => {
+    const today = periodStart("Hoje");
+    const week = periodStart("Semana");
+    const month = periodStart("Mês");
+    const todayRows = checkIns.filter((row) => row.timestamp >= today);
+    return {
+      today: todayRows.length,
+      week: checkIns.filter((row) => row.timestamp >= week).length,
+      month: checkIns.filter((row) => row.timestamp >= month).length,
+      peak: peakHour(todayRows.length > 0 ? todayRows : checkIns),
+    };
+  }, [checkIns]);
+
+  const filteredCheckIns = checkIns.filter((checkIn) => {
+    const matchesName = checkIn.studentName.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesName && checkIn.timestamp >= periodStart(periodFilter);
+  });
 
   return (
     <AdminLayout>
@@ -479,7 +365,7 @@ export function CheckIns() {
             <MetricCard
               icon={TrendingUp}
               label="HOJE"
-              value="15"
+              value={String(metrics.today)}
               description="Check-ins hoje"
               color="red"
               index={0}
@@ -487,7 +373,7 @@ export function CheckIns() {
             <MetricCard
               icon={Calendar}
               label="SEMANA"
-              value="20"
+              value={String(metrics.week)}
               description="Esta semana"
               color="green"
               index={1}
@@ -495,7 +381,7 @@ export function CheckIns() {
             <MetricCard
               icon={UsersIcon}
               label="MÊS"
-              value="20"
+              value={String(metrics.month)}
               description="Este mês"
               color="purple"
               index={2}
@@ -503,7 +389,7 @@ export function CheckIns() {
             <MetricCard
               icon={Zap}
               label="PICO"
-              value="18:00-19:00"
+              value={metrics.peak}
               description="Horário de pico"
               color="yellow"
               index={3}
@@ -584,6 +470,11 @@ export function CheckIns() {
 
             {/* Check-in List */}
             <div className="flex flex-col gap-3">
+              {filteredCheckIns.length === 0 && (
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#606060" }}>
+                  Nenhum check-in neste período.
+                </p>
+              )}
               {filteredCheckIns.map((checkIn, index) => (
                 <CheckInItem key={checkIn.id} checkIn={checkIn} index={index} />
               ))}

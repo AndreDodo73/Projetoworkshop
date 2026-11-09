@@ -4,10 +4,19 @@ import { X, Search, Hash, Mail } from "lucide-react";
 import { useNavigate } from "react-router";
 import { QRCodeSVG } from "qrcode.react";
 import imgForgeeLogo from "../../imports/ModoRecepcao/234239702fd000ad91d5040296534366f62ba051.png";
+import { demoQrCheckIn, loadReceptionPin, manualCheckIn } from "../../lib/academy";
 
 // ─── Password Modal Component ─────────────────────────────────────────────────
 
-function PasswordModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: () => void }) {
+function PasswordModal({
+  onClose,
+  onSuccess,
+  expectedPin,
+}: {
+  onClose: () => void;
+  onSuccess: () => void;
+  expectedPin: string;
+}) {
   const [pin, setPin] = useState(["", "", "", ""]);
   const [error, setError] = useState(false);
 
@@ -36,7 +45,7 @@ function PasswordModal({ onClose, onSuccess }: { onClose: () => void; onSuccess:
 
   const handleSubmit = () => {
     const enteredPin = pin.join("");
-    if (enteredPin === "1234") {
+    if (expectedPin && enteredPin === expectedPin) {
       onSuccess();
     } else {
       setError(true);
@@ -180,6 +189,10 @@ export function ModoRecepcao() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [inputMode, setInputMode] = useState<"codigo" | "email">("codigo");
   const [inputValue, setInputValue] = useState("");
+  const [receptionPin, setReceptionPin] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const [feedbackOk, setFeedbackOk] = useState(false);
+  const [checkingIn, setCheckingIn] = useState(false);
 
   const handleClose = () => {
     setShowPasswordModal(true);
@@ -188,6 +201,39 @@ export function ModoRecepcao() {
   const handlePasswordSuccess = () => {
     setShowPasswordModal(false);
     navigate("/dashboard");
+  };
+
+  useEffect(() => {
+    let active = true;
+    loadReceptionPin()
+      .then((pin) => {
+        if (active) setReceptionPin(pin);
+      })
+      .catch(() => {
+        if (active) {
+          setFeedbackOk(false);
+          setFeedback("Não foi possível carregar o PIN da recepção.");
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const runCheckIn = async (action: () => Promise<string>) => {
+    if (checkingIn) return;
+    setCheckingIn(true);
+    try {
+      const name = await action();
+      setFeedbackOk(true);
+      setFeedback(`Check-in de ${name} registrado.`);
+      setInputValue("");
+    } catch (error) {
+      setFeedbackOk(false);
+      setFeedback(error instanceof Error ? error.message : "Não foi possível registrar o check-in.");
+    } finally {
+      setCheckingIn(false);
+    }
   };
 
   useEffect(() => {
@@ -336,6 +382,9 @@ export function ModoRecepcao() {
               placeholder={inputMode === "codigo" ? "Digite o código..." : "Digite o email..."}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") void runCheckIn(() => manualCheckIn(inputMode, inputValue));
+              }}
               className="w-full bg-[#0D0D0D] border border-[#303030] rounded-2xl pl-12 pr-4 py-3 text-[#F2F2F2] placeholder:text-[#606060] outline-none focus:border-[#E8400A] transition-colors"
               style={{
                 fontFamily: "'Inter', sans-serif",
@@ -357,9 +406,43 @@ export function ModoRecepcao() {
             {inputMode === "codigo" ? "Ex: 12345" : "Ex: joao@email.com"}
           </p>
 
+          <button
+            type="button"
+            disabled={checkingIn}
+            onClick={() => void runCheckIn(() => manualCheckIn(inputMode, inputValue))}
+            className="w-full bg-[#E8271A] rounded-2xl py-3 mb-3 disabled:opacity-60"
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 14,
+              fontWeight: 500,
+              letterSpacing: "1.4px",
+              color: "#FFFFFF",
+              textTransform: "uppercase",
+            }}
+          >
+            Registrar entrada
+          </button>
+
+          {feedback && (
+            <p
+              className="mb-4"
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 14,
+                color: feedbackOk ? "#4ADE80" : "#E8271A",
+                textAlign: "center",
+              }}
+            >
+              {feedback}
+            </p>
+          )}
+
           {/* Demo Button */}
           <button
-            className="w-full bg-[#1A1A1A] border border-[#303030] rounded-2xl py-3 transition-colors hover:border-[#606060]"
+            type="button"
+            disabled={checkingIn}
+            onClick={() => void runCheckIn(demoQrCheckIn)}
+            className="w-full bg-[#1A1A1A] border border-[#303030] rounded-2xl py-3 transition-colors hover:border-[#606060] disabled:opacity-60"
             style={{
               fontFamily: "'JetBrains Mono', monospace",
               fontSize: 14,
@@ -412,6 +495,7 @@ export function ModoRecepcao() {
       <AnimatePresence>
         {showPasswordModal && (
           <PasswordModal
+            expectedPin={receptionPin}
             onClose={() => setShowPasswordModal(false)}
             onSuccess={handlePasswordSuccess}
           />

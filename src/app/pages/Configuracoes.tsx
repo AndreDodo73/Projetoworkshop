@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Sun,
@@ -27,67 +27,25 @@ import {
 import { useNavigate } from "react-router";
 import { AdminLayout } from "../components/AdminLayout";
 import { toast } from "sonner";
+import { useAuth } from "../../lib/auth";
+import { supabase } from "../../lib/supabase";
+import {
+  loadGeneral,
+  loadPlans,
+  loadSystem,
+  saveGeneral,
+  savePlans,
+  saveSystem,
+  type AcademyGeneral,
+  type AcademySystem,
+  type PlanRecord,
+} from "../../lib/academy";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Tab = "geral" | "perfil" | "planos" | "sistema";
 
-interface Plan {
-  id: string;
-  name: string;
-  subtitle: string;
-  price: string;
-  benefits: string[];
-  featured: boolean;
-  accentColor?: string;
-}
-
-// ─── Mock Data ────────────────────────────────────────────────────────────────
-
-const initialPlans: Plan[] = [
-  {
-    id: "basic",
-    name: "BASIC",
-    subtitle: "Plano básico",
-    price: "89.9",
-    benefits: [
-      "Acesso à área de musculação",
-      "Horário livre",
-      "Armário individual",
-    ],
-    featured: false,
-    accentColor: "#F2F2F2",
-  },
-  {
-    id: "premium",
-    name: "PREMIUM",
-    subtitle: "Plano mais popular",
-    price: "199.9",
-    benefits: [
-      "Tudo do plano BASIC",
-      "Aulas coletivas ilimitadas",
-      "Avaliação física mensal",
-      "Treino personalizado",
-    ],
-    featured: true,
-    accentColor: "#E8400A",
-  },
-  {
-    id: "elite",
-    name: "ELITE",
-    subtitle: "Plano completo",
-    price: "299.9",
-    benefits: [
-      "Tudo do plano PREMIUM",
-      "Personal trainer 2x por semana",
-      "Acompanhamento nutricional",
-      "Acesso a unidades parceiras",
-      "Bebidas proteicas gratuitas",
-    ],
-    featured: false,
-    accentColor: "#E8400A",
-  },
-];
+type Plan = PlanRecord & { accentColor?: string };
 
 // ─── Shared Components ────────────────────────────────────────────────────────
 
@@ -278,25 +236,46 @@ function SectionTitle({ title, subtitle }: { title: string; subtitle?: string })
 
 // ─── Tab: Geral ───────────────────────────────────────────────────────────────
 
-function TabGeral() {
-  const [form, setForm] = useState({
-    nomeAcademia: "FORGEE Academia",
-    cnpj: "12.345.678/0001-90",
-    telefone: "(11) 3456-7890",
-    email: "contato@forgee.com.br",
-    endereco: "Rua das Academias, 123 - Centro",
-    cidade: "Indaiatuba",
-    estado: "SP",
-    cep: "13345-000",
-  });
-  const [saved, setSaved] = useState({ ...form });
+const emptyGeneral: AcademyGeneral = {
+  nomeAcademia: "",
+  cnpj: "",
+  telefone: "",
+  email: "",
+  endereco: "",
+  cidade: "",
+  estado: "",
+  cep: "",
+};
 
-  const set = (key: keyof typeof form) => (v: string) =>
+function TabGeral() {
+  const [form, setForm] = useState<AcademyGeneral>(emptyGeneral);
+  const [saved, setSaved] = useState<AcademyGeneral>(emptyGeneral);
+
+  useEffect(() => {
+    let active = true;
+    loadGeneral()
+      .then((next) => {
+        if (!active) return;
+        setForm(next);
+        setSaved(next);
+      })
+      .catch((error: Error) => toast.error(error.message));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const set = (key: keyof AcademyGeneral) => (v: string) =>
     setForm((p) => ({ ...p, [key]: v }));
 
-  const handleSave = () => {
-    setSaved({ ...form });
-    toast.success("Configurações salvas com sucesso.");
+  const handleSave = async () => {
+    try {
+      await saveGeneral(form);
+      setSaved({ ...form });
+      toast.success("Configurações salvas com sucesso.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Não foi possível salvar.");
+    }
   };
 
   const handleCancel = () => {
@@ -391,19 +370,47 @@ function TabGeral() {
 // ─── Tab: Perfil Admin ────────────────────────────────────────────────────────
 
 function TabPerfil() {
+  const { refreshStaff } = useAuth();
   const [form, setForm] = useState({
-    nome: "Admin FORGEE",
-    email: "admin@forgee.com.br",
-    telefone: "(11) 98765-4321",
+    nome: "",
+    email: "",
+    telefone: "",
   });
   const [saved, setSaved] = useState({ ...form });
   const [senhaAtual, setSenhaAtual] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
 
+  useEffect(() => {
+    let active = true;
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user || !active) return;
+      const { data: profile, error } = await supabase
+        .from("usuarios")
+        .select("nome, email, telefone")
+        .eq("id", data.user.id)
+        .maybeSingle();
+      if (!active) return;
+      if (error || !profile) {
+        toast.error("Não foi possível carregar o perfil.");
+        return;
+      }
+      const next = {
+        nome: profile.nome,
+        email: profile.email,
+        telefone: profile.telefone ?? "",
+      };
+      setForm(next);
+      setSaved(next);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const set = (key: keyof typeof form) => (v: string) =>
     setForm((p) => ({ ...p, [key]: v }));
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (novaSenha && !senhaAtual) {
       toast.error("Informe a senha atual para alterá-la.");
       return;
@@ -412,10 +419,63 @@ function TabPerfil() {
       toast.error("A nova senha deve ter ao menos 6 caracteres.");
       return;
     }
+    if (!form.nome.trim() || !form.email.trim()) {
+      toast.error("Nome e e-mail são obrigatórios.");
+      return;
+    }
+
+    const { data: authData, error: authError } = await supabase.auth.getUser();
+    const user = authData.user;
+    if (authError || !user?.email) {
+      toast.error("Sessão expirada. Entre novamente.");
+      return;
+    }
+
+    if (novaSenha) {
+      const reauth = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: senhaAtual,
+      });
+      if (reauth.error) {
+        toast.error("A senha atual não confere.");
+        return;
+      }
+      const passwordUpdate = await supabase.auth.updateUser({ password: novaSenha });
+      if (passwordUpdate.error) {
+        toast.error("Não foi possível alterar a senha.");
+        return;
+      }
+    }
+
+    let emailNote = "";
+    if (form.email.trim().toLowerCase() !== user.email.toLowerCase()) {
+      const emailUpdate = await supabase.auth.updateUser({ email: form.email.trim() });
+      if (emailUpdate.error) {
+        toast.error("Não foi possível alterar o e-mail de acesso.");
+        return;
+      }
+      if (emailUpdate.data.user?.email?.toLowerCase() !== form.email.trim().toLowerCase()) {
+        emailNote = " Confirme o novo e-mail na mensagem que enviamos antes de usá-lo para entrar.";
+      }
+    }
+
+    const { error } = await supabase
+      .from("usuarios")
+      .update({
+        nome: form.nome.trim(),
+        telefone: form.telefone.trim() || null,
+      })
+      .eq("id", user.id);
+    if (error) {
+      toast.error("Não foi possível salvar o perfil.");
+      return;
+    }
+
     setSaved({ ...form });
     setSenhaAtual("");
     setNovaSenha("");
-    toast.success("Perfil salvo com sucesso.");
+    await refreshStaff();
+    toast.success(`Perfil salvo com sucesso.${emailNote}`);
   };
 
   const handleCancel = () => {
@@ -533,7 +593,7 @@ function PlanCard({
     setNewBenefit("");
   };
 
-  const isCustom = !["basic", "premium", "elite"].includes(plan.id);
+  const isCustom = true;
   const accentColor = plan.featured ? "#E8400A" : "#F2F2F2";
 
   return (
@@ -867,9 +927,19 @@ function CriarPlanoModal({
 }
 
 function TabPlanos() {
-  const [plans, setPlans] = useState<Plan[]>(initialPlans);
-  const [savedPlans, setSavedPlans] = useState<Plan[]>(initialPlans);
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [savedPlans, setSavedPlans] = useState<Plan[]>([]);
   const [showModal, setShowModal] = useState(false);
+
+  const reload = async () => {
+    const next = await loadPlans();
+    setPlans(next);
+    setSavedPlans(next);
+  };
+
+  useEffect(() => {
+    reload().catch((error: Error) => toast.error(error.message));
+  }, []);
 
   const updatePlan = (id: string, updated: Plan) => {
     setPlans((p) => p.map((plan) => (plan.id === id ? updated : plan)));
@@ -883,9 +953,14 @@ function TabPlanos() {
     setPlans((p) => [...p, plan]);
   };
 
-  const handleSave = () => {
-    setSavedPlans([...plans]);
-    toast.success("Planos salvos com sucesso.");
+  const handleSave = async () => {
+    try {
+      await savePlans(plans, savedPlans);
+      await reload();
+      toast.success("Planos salvos com sucesso.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Não foi possível salvar os planos.");
+    }
   };
 
   const handleCancel = () => {
@@ -904,6 +979,11 @@ function TabPlanos() {
         />
 
         <div className="flex flex-col gap-4">
+          {plans.length === 0 && (
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#606060" }}>
+              Nenhum plano cadastrado.
+            </p>
+          )}
           <AnimatePresence mode="popLayout">
             {plans.map((plan) => (
               <PlanCard
@@ -954,10 +1034,29 @@ function TabSistema() {
   const [fechamento, setFechamento] = useState("22:00");
   const [diasRisco, setDiasRisco] = useState("10");
   const [diasVencimento, setDiasVencimento] = useState("5");
+  const [pin, setPin] = useState("1234");
 
-  const [savedState, setSavedState] = useState({ abertura, fechamento, diasRisco, diasVencimento });
+  const [savedState, setSavedState] = useState<AcademySystem>({ abertura, fechamento, diasRisco, diasVencimento, pin });
 
-  const handleSave = () => {
+  useEffect(() => {
+    let active = true;
+    loadSystem()
+      .then((next) => {
+        if (!active) return;
+        setAbertura(next.abertura);
+        setFechamento(next.fechamento);
+        setDiasRisco(next.diasRisco);
+        setDiasVencimento(next.diasVencimento);
+        setPin(next.pin);
+        setSavedState(next);
+      })
+      .catch((error: Error) => toast.error(error.message));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const handleSave = async () => {
     if (fechamento <= abertura) {
       toast.error("O horário de fechamento deve ser posterior ao de abertura.");
       return;
@@ -970,8 +1069,18 @@ function TabSistema() {
       toast.error("Dias antes do vencimento deve ser um número inteiro positivo.");
       return;
     }
-    setSavedState({ abertura, fechamento, diasRisco, diasVencimento });
-    toast.success("Configurações do sistema salvas.");
+    if (!/^\d{4}$/.test(pin)) {
+      toast.error("O PIN da recepção precisa ter 4 números.");
+      return;
+    }
+    const next = { abertura, fechamento, diasRisco, diasVencimento, pin };
+    try {
+      await saveSystem(next);
+      setSavedState(next);
+      toast.success("Configurações do sistema salvas.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Não foi possível salvar.");
+    }
   };
 
   const handleCancel = () => {
@@ -979,6 +1088,7 @@ function TabSistema() {
     setFechamento(savedState.fechamento);
     setDiasRisco(savedState.diasRisco);
     setDiasVencimento(savedState.diasVencimento);
+    setPin(savedState.pin);
   };
 
   return (
@@ -1110,6 +1220,31 @@ function TabSistema() {
               Antecedência para notificar vencimento
             </p>
           </div>
+        </div>
+      </div>
+
+      <div className="mb-8" style={{ borderTop: "1px solid #2A2A2A", paddingTop: 24 }}>
+        <p
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 16,
+            fontWeight: 600,
+            color: "#F2F2F2",
+            marginBottom: 16,
+          }}
+        >
+          PIN da recepção
+        </p>
+        <div className="max-w-xs">
+          <FormInput
+            label="PIN de 4 números"
+            value={pin}
+            onChange={(value) => setPin(value.replace(/\D/g, "").slice(0, 4))}
+            placeholder="0000"
+          />
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#606060", marginTop: 8 }}>
+            Usado para sair do modo recepção
+          </p>
         </div>
       </div>
 

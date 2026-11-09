@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 import {
   Users,
   UserX,
@@ -24,80 +25,8 @@ import {
 } from "recharts";
 import { useNavigate } from "react-router";
 import { AdminLayout } from "../components/AdminLayout";
-import imgMariaSantos from "../../imports/Dashboard-2/c370e1db29c9956574be3ed78df1b2c14bcdb239.png";
-import imgJoaoSilva from "../../imports/Dashboard-2/81e581e8bdbf8c9f2fa02e4c20dce774b1a1bb76.png";
-import imgAnaCosta from "../../imports/Dashboard-2/e243fca66b972890241de9a6542eedb4acdb0d0f.png";
-import imgPedroAlves from "../../imports/Dashboard-2/4631e0b3856fc2d697783d063af0506770940150.png";
-import imgCarlaSouza from "../../imports/Dashboard-2/a8d9836506bb678008af0be8a848b247e3386b00.png";
+import { loadDashboard, type DashboardData } from "../../lib/academy";
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
-const monthlyGrowth = [
-  { month: "Abr 25", members: 172 },
-  { month: "Mai 25", members: 189 },
-  { month: "Jun 25", members: 201 },
-  { month: "Jul 25", members: 215 },
-  { month: "Ago 25", members: 242 },
-  { month: "Set 25", members: 268 },
-  { month: "Out 25", members: 291 },
-  { month: "Nov 25", members: 312 },
-  { month: "Dez 25", members: 345 },
-  { month: "Jan 26", members: 448 },
-  { month: "Fev 26", members: 500 },
-];
-
-const recentMembers = [
-  {
-    id: 1,
-    name: "Maria Santos",
-    plan: "PREMIUM",
-    time: "1 hora atrás",
-    status: "Em dia",
-    statusColor: "#4ADE80",
-    avatar: imgMariaSantos,
-  },
-  {
-    id: 2,
-    name: "João Silva",
-    plan: "BASIC",
-    time: "3 horas atrás",
-    status: "Vencendo",
-    statusColor: "#FACC15",
-    avatar: imgJoaoSilva,
-  },
-  {
-    id: 3,
-    name: "Ana Costa",
-    plan: "ELITE",
-    time: "2 dias atrás",
-    status: "Em atraso",
-    statusColor: "#EF4444",
-    avatar: imgAnaCosta,
-  },
-  {
-    id: 4,
-    name: "Pedro Alves",
-    plan: "PREMIUM",
-    time: "5 horas atrás",
-    status: "Em dia",
-    statusColor: "#4ADE80",
-    avatar: imgPedroAlves,
-  },
-  {
-    id: 5,
-    name: "Carla Souza",
-    plan: "BASIC",
-    time: "1 dia atrás",
-    status: "Em dia",
-    statusColor: "#4ADE80",
-    avatar: imgCarlaSouza,
-  },
-];
-
-const touristMembers = [
-  { id: 1, name: "Lucas Martins", plan: "PREMIUM", days: 12 },
-  { id: 2, name: "Fernanda Lima", plan: "BASIC", days: 14 },
-  { id: 3, name: "Roberto Carlos", plan: "ELITE", days: 16 },
-];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function getPlanColor(plan: string) {
@@ -238,53 +167,39 @@ function CustomTooltip({ active, payload, label }: any) {
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
+const zeroMetrics = {
+  active: 0,
+  inactive: 0,
+  checkins: 0,
+  frequency: 0,
+  ghosts: 0,
+  newMembers: 0,
+};
+
 export function Dashboard() {
   const navigate = useNavigate();
-  const [metrics, setMetrics] = useState({
-    active: 0,
-    inactive: 0,
-    checkins: 0,
-    frequency: 0,
-    ghosts: 0,
-    newMembers: 0,
-  });
-
-  const targets = {
-    active: 248,
-    inactive: 20,
-    checkins: 87,
-    frequency: 3.4,
-    ghosts: 15,
-    newMembers: 23,
-  };
+  const [data, setData] = useState<DashboardData | null>(null);
+  const metrics = data?.metrics ?? zeroMetrics;
+  const monthlyGrowth = data?.monthlyGrowth ?? [];
+  const recentMembers = data?.recentMembers ?? [];
+  const touristMembers = data?.tourists ?? [];
+  const todayLabel = new Intl.DateTimeFormat("pt-BR", {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date());
 
   useEffect(() => {
-    const duration = 1400;
-    const steps = 60;
-    const interval = setInterval(() => {
-      setMetrics((prev) => {
-        const progress = Math.min(
-          (prev.active / targets.active + 1 / steps),
-          1
-        );
-        if (prev.active >= targets.active) {
-          clearInterval(interval);
-          return targets;
-        }
-        return {
-          active: Math.min(Math.floor(targets.active * progress), targets.active),
-          inactive: Math.min(Math.floor(targets.inactive * progress), targets.inactive),
-          checkins: Math.min(Math.floor(targets.checkins * progress), targets.checkins),
-          frequency: Math.min(
-            parseFloat((targets.frequency * progress).toFixed(1)),
-            targets.frequency
-          ),
-          ghosts: Math.min(Math.floor(targets.ghosts * progress), targets.ghosts),
-          newMembers: Math.min(Math.floor(targets.newMembers * progress), targets.newMembers),
-        };
-      });
-    }, duration / steps);
-    return () => clearInterval(interval);
+    let active = true;
+    loadDashboard()
+      .then((result) => {
+        if (active) setData(result);
+      })
+      .catch((error: Error) => toast.error(error.message));
+    return () => {
+      active = false;
+    };
   }, []);
 
   return (
@@ -322,7 +237,7 @@ export function Dashboard() {
                     color: "#606060",
                   }}
                 >
-                  Visão Geral — Domingo, 22 Fev 2026
+                  Visão Geral — {todayLabel}
                 </p>
               </div>
             </div>
@@ -450,7 +365,7 @@ export function Dashboard() {
             <MetricCard
               label="Inativos"
               value={metrics.inactive}
-              description="12 pausados, 8 cancelados"
+              description="Fora da base ativa"
               icon={UserX}
               iconColor="#FACC15"
               iconBg="rgba(250,204,21,0.1)"
@@ -547,7 +462,7 @@ export function Dashboard() {
                   opacity: 0.85,
                 }}
               >
-                Turistas 10+ dias sem check-in
+                Turistas {data?.riskDays ?? 10}+ dias sem check-in
               </p>
             </motion.div>
 
@@ -632,7 +547,7 @@ export function Dashboard() {
                     lineHeight: 1,
                   }}
                 >
-                  +328 MEMBROS
+                  {data?.growthLabel ?? "+0 MEMBROS"}
                 </h2>
                 <p
                   style={{
@@ -658,7 +573,7 @@ export function Dashboard() {
                     color: "#22C55E",
                   }}
                 >
-                  +24%
+                  {data?.growthPercent ?? "—"}
                 </span>
               </div>
             </div>
@@ -732,6 +647,7 @@ export function Dashboard() {
                 }}
                 onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#FF4D0D")}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#E8400A")}
+                onClick={() => navigate("/alunos")}
               >
                 Ver todos os membros
                 <ChevronRight size={14} />
@@ -777,6 +693,7 @@ export function Dashboard() {
                   }}
                   onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#A8A8A8")}
                   onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#606060")}
+                  onClick={() => navigate("/alunos")}
                 >
                   Ver todos
                   <ChevronRight size={14} />
@@ -785,6 +702,11 @@ export function Dashboard() {
 
               {/* List */}
               <div>
+                {recentMembers.length === 0 && (
+                  <p className="px-6 py-5" style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#606060" }}>
+                    Nenhum aluno cadastrado.
+                  </p>
+                )}
                 {recentMembers.map((member, i) => (
                   <motion.div
                     key={member.id}
@@ -918,13 +840,18 @@ export function Dashboard() {
                       color: "#A8A8A8",
                     }}
                   >
-                    Sem check-in há 10+ dias
+                    Sem check-in há {data?.riskDays ?? 10}+ dias
                   </p>
                 </div>
               </div>
 
               {/* Tourist list */}
               <div className="flex-1 p-3 space-y-1.5">
+                {touristMembers.length === 0 && (
+                  <p className="px-4 py-3" style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#A8A8A8" }}>
+                    Nenhum aluno nesse período.
+                  </p>
+                )}
                 {touristMembers.map((t, i) => (
                   <motion.div
                     key={t.id}

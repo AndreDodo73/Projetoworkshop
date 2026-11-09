@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router";
+import { useAuth } from "../../lib/auth";
 import imgForgeeLogo from "../../imports/Dashboard-2/234239702fd000ad91d5040296534366f62ba051.png";
 
 interface AdminLayoutProps {
@@ -32,6 +33,7 @@ function SidebarContent({
 }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { staff, signOut } = useAuth();
 
   const isActive = (path: string) => {
     if (path === "#") return false;
@@ -155,7 +157,7 @@ function SidebarContent({
                 color: "#FFFFFF",
               }}
             >
-              Admin FORGEE
+              {staff?.nome || "Admin FORGEE"}
             </p>
             <p
               style={{
@@ -171,7 +173,12 @@ function SidebarContent({
           </div>
         </div>
         <motion.button
-          onClick={() => { navigate("/login-admin"); onNavClick?.(); }}
+          onClick={() => {
+            void signOut().then(() => {
+              navigate("/login-admin");
+              onNavClick?.();
+            });
+          }}
           className="w-full flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-left"
           style={{ color: "#6B6B6B" }}
           whileHover={{ backgroundColor: "#1A1A1A", color: "#FFFFFF" }}

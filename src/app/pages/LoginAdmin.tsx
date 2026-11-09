@@ -1,18 +1,100 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Eye, EyeOff, Mail, Lock, ShieldCheck, ArrowLeft } from "lucide-react";
 import svgPaths from "../../imports/LoginAdmin/svg-d45t8b3hdf";
 import imgImageForgeeLogo from "../../imports/LoginAdmin/234239702fd000ad91d5040296534366f62ba051.png";
+import { useAuth } from "../../lib/auth";
+import { BOOTSTRAP_ADMIN_EMAIL, supabase } from "../../lib/supabase";
+
+const CONFIRM_MESSAGE =
+  "Enviamos um e-mail de confirmação. Abra esse e-mail e depois entre de novo com a mesma senha.";
+
+function needsConfirmation(message: string, code?: string) {
+  const text = message.toLowerCase();
+  return code === "email_not_confirmed" || text.includes("email not confirmed") || text.includes("not confirmed");
+}
 
 export function LoginAdmin() {
   const navigate = useNavigate();
+  const { ready, session, staff, notice, clearNotice } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (ready && session && staff) navigate("/dashboard", { replace: true });
+  }, [ready, session, staff, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/dashboard");
+    clearNotice();
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail || !normalizedEmail.includes("@")) {
+      setMessage("Informe o e-mail administrativo.");
+      return;
+    }
+    if (password.length < 6) {
+      setMessage("A senha precisa ter ao menos 6 caracteres.");
+      return;
+    }
+
+    setSubmitting(true);
+    setMessage("");
+
+    const signIn = await supabase.auth.signInWithPassword({
+      email: normalizedEmail,
+      password,
+    });
+
+    if (!signIn.error && signIn.data.session) {
+      navigate("/dashboard");
+      return;
+    }
+
+    if (signIn.error && needsConfirmation(signIn.error.message, signIn.error.code)) {
+      setMessage(CONFIRM_MESSAGE);
+      setSubmitting(false);
+      return;
+    }
+
+    const canCreateAdmin = normalizedEmail === BOOTSTRAP_ADMIN_EMAIL;
+    const missingAccount =
+      signIn.error?.code === "invalid_credentials" ||
+      signIn.error?.code === "user_not_found" ||
+      /invalid login credentials|user not found/i.test(signIn.error?.message ?? "");
+
+    if (!canCreateAdmin || !missingAccount) {
+      setMessage("E-mail ou senha incorretos.");
+      setSubmitting(false);
+      return;
+    }
+
+    const signUp = await supabase.auth.signUp({
+      email: normalizedEmail,
+      password,
+      options: { data: { nome: "Andre" } },
+    });
+
+    if (signUp.error) {
+      const alreadyExists = /already registered|already exists|user_already_exists/i.test(
+        `${signUp.error.code ?? ""} ${signUp.error.message}`,
+      );
+      setMessage(alreadyExists ? "E-mail ou senha incorretos." : "Não foi possível criar o acesso. Tente de novo.");
+      setSubmitting(false);
+      return;
+    }
+
+    if (signUp.data.session) {
+      navigate("/dashboard");
+      return;
+    }
+
+    const identities = signUp.data.user?.identities ?? [];
+    setMessage(identities.length === 0 ? "E-mail ou senha incorretos." : CONFIRM_MESSAGE);
+    setSubmitting(false);
   };
 
   return (
@@ -197,7 +279,8 @@ export function LoginAdmin() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-[#E8400A] hover:bg-[#FF4D0D] text-white rounded-lg py-4 flex items-center justify-center gap-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#E8400A] focus:ring-offset-2 focus:ring-offset-[#111111]"
+              disabled={submitting}
+              className="w-full bg-[#E8400A] hover:bg-[#FF4D0D] disabled:opacity-60 text-white rounded-lg py-4 flex items-center justify-center gap-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#E8400A] focus:ring-offset-2 focus:ring-offset-[#111111]"
               style={{
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 500,
@@ -207,20 +290,23 @@ export function LoginAdmin() {
               }}
             >
               <ShieldCheck className="w-4 h-4" />
-              Acessar Painel
+              {submitting ? "Entrando..." : "Acessar Painel"}
             </button>
-            <p
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontWeight: 400,
-                fontSize: "13px",
-                lineHeight: "20px",
-                color: "#A8A8A8",
-                textAlign: "center",
-              }}
-            >
-              Ambiente de estudo: clique em Acessar Painel. Não precisa de senha.
-            </p>
+            {(message || notice) && (
+              <p
+                role="alert"
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontWeight: 400,
+                  fontSize: "13px",
+                  lineHeight: "20px",
+                  color: "#E8400A",
+                  textAlign: "center",
+                }}
+              >
+                {message || notice}
+              </p>
+            )}
           </form>
 
           {/* Footer */}
