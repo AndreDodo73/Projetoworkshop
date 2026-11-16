@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router";
-import { FernandoForestPage } from "./fernando-forest/FernandoForestPage";
+import { Layout } from "./components/Layout";
+import { Home } from "./pages/Home";
 import { LoginAdmin } from "./pages/LoginAdmin";
 import { Dashboard } from "./pages/Dashboard";
 import { NovoAluno } from "./pages/NovoAluno";
@@ -11,7 +12,10 @@ import { Configuracoes } from "./pages/Configuracoes";
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: FernandoForestPage,
+    Component: Layout,
+    children: [
+      { index: true, Component: Home },
+    ],
   },
   {
     path: "/login-admin",
