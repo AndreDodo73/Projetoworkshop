@@ -128,7 +128,7 @@ footer button {
   right: 100%;
   bottom: -8px;
   background: var(--orange);
-  transition: right 0.25s;
+  transition: right 0.45s var(--ease-frame);
 }
 .nav button:hover::after {
   right: 0;
@@ -157,6 +157,14 @@ footer button {
   color: #888;
   font: 600 10px "Montserrat:SemiBold";
   padding: 6px 4px;
+  transition: color 0.25s var(--ease-frame), transform 0.35s var(--ease-frame);
+}
+.language-switcher button:hover,
+.language-switcher button:focus-visible {
+  color: var(--ink);
+}
+.language-switcher button:active {
+  transform: scale(0.94);
 }
 .language-switcher button.active {
   color: var(--ink);
@@ -296,11 +304,16 @@ footer button {
   text-align: center;
   transition:
     background 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.35s var(--ease-frame),
+    transform 0.35s var(--ease-frame);
 }
 .hero-cta:hover {
   background: #fead34;
   box-shadow: 0 4px 18px rgb(0 0 0 / 20%);
+  transform: translateY(-2px);
+}
+.hero-cta:active {
+  transform: translateY(0) scale(0.98);
 }
 .pill {
   min-height: 56px;
@@ -807,6 +820,17 @@ footer button {
   line-height: 1;
   padding: 0;
   cursor: pointer;
+  transition:
+    color 0.3s var(--ease-frame),
+    transform 0.45s var(--ease-frame);
+}
+.stories-nav:hover,
+.stories-nav:focus-visible {
+  transform: translateX(-3px);
+}
+.stories-nav.stories-nav-next:hover,
+.stories-nav.stories-nav-next:focus-visible {
+  transform: translateX(3px);
 }
 .stories-nav:hover,
 .stories-nav:focus-visible,
@@ -1776,7 +1800,12 @@ footer {
     clip-path: none !important;
   }
   .shop-card:hover,
-  .shop-card:focus-within {
+  .shop-card:focus-within,
+  .hero-cta:hover,
+  .hero-cta:active,
+  .stories-nav:hover,
+  .stories-nav:focus-visible,
+  .language-switcher button:active {
     transform: none !important;
   }
   .motion-ready .reveal-image img {

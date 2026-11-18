@@ -149,6 +149,17 @@
 .shop-card-cta .arrow {
   color: var(--orange);
 }
+.shop-card-cta .link-label,
+.award-link .award-title,
+.document-link > span:nth-child(2) {
+  transition: transform 0.4s var(--ease-frame);
+}
+.shop-card:hover .shop-card-cta .link-label,
+.shop-card:focus-within .shop-card-cta .link-label,
+.award-link:hover .award-title,
+.document-link:hover > span:nth-child(2) {
+  transform: translateX(3px);
+}
 .site-header .nav {
   gap: 14px;
   flex-wrap: nowrap;
