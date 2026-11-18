@@ -134,76 +134,16 @@
   color: var(--orange);
 }
 .site-header .nav {
-  gap: 20px;
+  gap: 14px;
+  flex-wrap: nowrap;
 }
-.nav-more {
-  position: relative;
-  z-index: 60;
+.site-header .nav button {
+  font-size: 12px;
+  white-space: nowrap;
 }
-.nav-more > summary {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  list-style: none;
-  cursor: pointer;
-  font: 500 13px "Montserrat:Medium";
-}
-.nav-more > summary::-webkit-details-marker,
 .service-copy summary::-webkit-details-marker {
   display: none;
 }
-.nav-more-chevron {
-  width: 7px;
-  height: 7px;
-  border-right: 1.5px solid currentColor;
-  border-bottom: 1.5px solid currentColor;
-  rotate: 45deg;
-  translate: 0 -1px;
-  transition: rotate 0.25s var(--ease-out), translate 0.25s var(--ease-out);
-}
-.nav-more[open] > summary .nav-more-chevron {
-  rotate: 225deg;
-  translate: 0 2px;
-}
-.nav-more > summary.active {
-  color: var(--orange);
-}
-.nav-extra {
-  position: absolute;
-  top: calc(100% + 14px);
-  right: 0;
-  min-width: 240px;
-  padding: 10px;
-  border: 1px solid #e0e0e0;
-  border-top: 3px solid var(--orange);
-  background: white;
-  box-shadow: 0 18px 35px rgb(0 0 0 / 12%);
-  display: grid;
-  gap: 2px;
-  animation: storyTextIn 0.25s var(--ease-out) both;
-}
-.nav-extra::before {
-  content: "";
-  position: absolute;
-  top: -14px;
-  left: 0;
-  right: 0;
-  height: 14px;
-}
-.nav-extra button {
-  padding: 12px 14px;
-  text-align: left;
-  border-radius: 6px;
-  transition: background 0.2s;
-}
-.nav-extra button::after {
-  display: none;
-}
-.nav-extra button:hover,
-.nav-extra button[aria-current="location"] {
-  background: var(--paper);
-}
-.nav-more summary:focus-visible,
 .service-copy summary:focus-visible {
   outline: 3px solid var(--yellow);
   outline-offset: 5px;
@@ -1102,11 +1042,14 @@
     max-height: 60px;
   }
   .site-header .nav {
-    gap: 16px;
+    gap: 10px;
+  }
+  .site-header .nav button {
+    font-size: 11px;
   }
   .header-actions {
-    margin-left: 18px;
-    gap: 12px;
+    margin-left: 14px;
+    gap: 10px;
   }
 }
 @media (max-width: 1180px) {
@@ -1127,16 +1070,6 @@
   }
   .site-header .nav {
     gap: 26px;
-  }
-  .nav-more summary {
-    justify-content: space-between;
-  }
-  .nav-extra {
-    position: static;
-    padding: 12px 0 0;
-    border: 0;
-    box-shadow: none;
-    min-width: 0;
   }
   .shop-rail-wrap {
     grid-template-columns: minmax(0, 1fr) auto;

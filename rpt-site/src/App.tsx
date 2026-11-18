@@ -273,6 +273,13 @@ export default function App() {
   const projectsRailRef = useRef<HTMLDivElement>(null);
   const t = copy[language];
   const extra = institutional[language];
+  const primaryNav = [
+    { id: "impacto", label: t.nav[0] },
+    { id: "historias", label: t.nav[1] },
+    { id: "projetos", label: t.nav[2] },
+    { id: "parceiros", label: t.nav[3] },
+  ] as const;
+  const navItems = [...primaryNav, ...extra.links];
   const person = storyPeople[activeStory];
   const storyCount = String(activeStory + 1).padStart(2, "0");
   const storyTotal = String(storyPeople.length).padStart(2, "0");
@@ -309,14 +316,7 @@ export default function App() {
 
   useEffect(() => {
     const closeMenu = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setMenuOpen(false);
-        const menu = document.querySelector<HTMLDetailsElement>(".nav-more[open]");
-        if (menu) {
-          menu.open = false;
-          menu.querySelector("summary")?.focus();
-        }
-      }
+      if (event.key === "Escape") setMenuOpen(false);
     };
     window.addEventListener("keydown", closeMenu);
     return () => window.removeEventListener("keydown", closeMenu);
@@ -377,7 +377,6 @@ export default function App() {
         : "smooth",
     });
     setMenuOpen(false);
-    document.querySelector<HTMLDetailsElement>(".nav-more")?.removeAttribute("open");
   };
 
   return (
@@ -399,43 +398,16 @@ export default function App() {
           <img src={`${A}/logo-horizontal.png`} alt="Instituto Rugby Para Todos" />
         </button>
         <nav className={menuOpen ? "nav open" : "nav"} aria-label="Navegação principal">
-          {t.nav.map((label, i) => (
+          {navItems.map((item) => (
             <button
-              key={label}
-              className={
-                activeSection === ["impacto", "historias", "projetos", "parceiros"][i]
-                  ? "active"
-                  : ""
-              }
-              onClick={() => goTo(["impacto", "historias", "projetos", "parceiros"][i])}
-              aria-current={
-                activeSection === ["impacto", "historias", "projetos", "parceiros"][i]
-                  ? "location"
-                  : undefined
-              }
+              key={item.id}
+              className={activeSection === item.id ? "active" : ""}
+              onClick={() => goTo(item.id)}
+              aria-current={activeSection === item.id ? "location" : undefined}
             >
-              {label}
+              {item.label}
             </button>
           ))}
-          <details className="nav-more">
-            <summary
-              className={extra.links.some((link) => link.id === activeSection) ? "active" : ""}
-            >
-              {extra.more}
-              <span className="nav-more-chevron" aria-hidden="true" />
-            </summary>
-            <div className="nav-extra" role="group" aria-label={extra.more}>
-              {extra.links.map((link) => (
-                <button
-                  key={link.id}
-                  onClick={() => goTo(link.id)}
-                  aria-current={activeSection === link.id ? "location" : undefined}
-                >
-                  {link.label}
-                </button>
-              ))}
-            </div>
-          </details>
         </nav>
         <div className="header-actions">
           <div className="language-switcher" aria-label="Idioma">
@@ -720,17 +692,9 @@ export default function App() {
           </div>
           <div>
             <p className="footer-label">{t.footerNav}</p>
-            {t.nav.map((item, i) => (
-              <button
-                key={item}
-                onClick={() => goTo(["impacto", "historias", "projetos", "parceiros"][i])}
-              >
-                {item}
-              </button>
-            ))}
-            {extra.links.map((link) => (
-              <button key={link.id} onClick={() => goTo(link.id)}>
-                {link.label}
+            {navItems.map((item) => (
+              <button key={item.id} onClick={() => goTo(item.id)}>
+                {item.label}
               </button>
             ))}
           </div>

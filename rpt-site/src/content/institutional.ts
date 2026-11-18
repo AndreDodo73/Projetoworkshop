@@ -390,7 +390,7 @@ export const institutional = {
     more: "Mais",
     links: [
       { id: "loja", label: "Loja" },
-      { id: "servicos", label: "Nossos serviços" },
+      { id: "servicos", label: "Serviços" },
       { id: "instituto", label: "O Instituto" },
       { id: "transparencia", label: "Transparência" },
       { id: "conteudos", label: "Conteúdos" },
@@ -498,7 +498,7 @@ export const institutional = {
     more: "More",
     links: [
       { id: "loja", label: "Shop" },
-      { id: "servicos", label: "Our services" },
+      { id: "servicos", label: "Services" },
       { id: "instituto", label: "The Institute" },
       { id: "transparencia", label: "Transparency" },
       { id: "conteudos", label: "Stories & news" },
@@ -605,7 +605,7 @@ export const institutional = {
     more: "Plus",
     links: [
       { id: "loja", label: "Boutique" },
-      { id: "servicos", label: "Nos services" },
+      { id: "servicos", label: "Services" },
       { id: "instituto", label: "L’Institut" },
       { id: "transparencia", label: "Transparence" },
       { id: "conteudos", label: "Actualités" },
