@@ -370,11 +370,22 @@ export default function App() {
   }, [language]);
 
   const goTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "instant"
-        : "smooth",
-    });
+    const section = document.getElementById(id);
+    if (!section) return;
+
+    // Impacto is a tall block: land on the metrics so the numbers are on screen.
+    const target =
+      id === "impacto"
+        ? section.querySelector<HTMLElement>(".metrics") ?? section
+        : section;
+
+    const header = document.querySelector<HTMLElement>(".site-header");
+    const headerOffset = (header?.offsetHeight ?? 96) + 12;
+    const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - headerOffset);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
+    setActiveSection(id);
     setMenuOpen(false);
   };
 
@@ -472,7 +483,7 @@ export default function App() {
         </div>
       </section>
 
-      <section className="impact" id="impacto">
+      <section className="impact" id="impacto" aria-labelledby="impacto-title">
         <div className="impact-image reveal reveal-image">
           <img
             src={`${A}/paraisopolis-mundo.jpg`}
@@ -481,10 +492,10 @@ export default function App() {
         </div>
         <div className="impact-copy reveal">
           <p className="eyebrow">{t.impactEyebrow}</p>
-          <h2>{t.impactTitle}</h2>
+          <h2 id="impacto-title">{t.impactTitle}</h2>
           <p className="lead">{t.impactBody}</p>
         </div>
-        <div className="metrics reveal">
+        <div className="metrics reveal" id="impacto-metricas">
           {t.numbers.map(([number, label]) => (
             <div className="metric" key={label}>
               <AnimatedNumber value={number} language={language} />

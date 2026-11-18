@@ -154,9 +154,19 @@ export function Hero({
       <button
         type="button"
         className="scroll-cue"
-        onClick={() =>
-          document.getElementById("impacto")?.scrollIntoView({ behavior: "smooth", block: "start" })
-        }
+        onClick={() => {
+          const section = document.getElementById("impacto");
+          const target =
+            section?.querySelector<HTMLElement>(".metrics") ?? section ?? document.getElementById("impacto-metricas");
+          if (!target) return;
+          const header = document.querySelector<HTMLElement>(".site-header");
+          const headerOffset = (header?.offsetHeight ?? 96) + 12;
+          const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - headerOffset);
+          window.scrollTo({
+            top,
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+          });
+        }}
         aria-label={text.scroll}
       >
         <span aria-hidden="true" />

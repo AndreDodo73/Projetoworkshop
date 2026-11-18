@@ -529,6 +529,20 @@ footer button {
   align-items: stretch;
   background: var(--paper);
   min-height: 850px;
+  scroll-margin-top: 110px;
+}
+#historias,
+#projetos,
+#parceiros,
+#instituto,
+#metodologia,
+#servicos,
+#transparencia,
+#loja,
+#doe,
+#conteudos,
+#impacto-metricas {
+  scroll-margin-top: 110px;
 }
 .impact-image {
   overflow: hidden;

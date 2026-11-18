@@ -33,10 +33,19 @@
 }
 .restored-section,
 .video-stories,
+#impacto,
+#impacto-metricas,
+#historias,
+#projetos,
+#parceiros,
 #instituto,
 #metodologia,
-#loja {
-  scroll-margin-top: 96px;
+#servicos,
+#transparencia,
+#loja,
+#doe,
+#conteudos {
+  scroll-margin-top: 110px;
 }
 .shop {
   background: #fff;
