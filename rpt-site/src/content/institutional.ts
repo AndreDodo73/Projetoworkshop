@@ -479,6 +479,8 @@ export const institutional = {
     contentBody:
       "Acompanhe ações, reportagens, entrevistas e histórias que acontecem nos projetos.",
     archive: "Arquivo do Instituto",
+    contentPhotoAlt:
+      "Atletas do Instituto em treino, ajoelhadas no campo com o uniforme amarelo.",
     newsTitle: "Dentro e fora de campo.",
     news: [
       "Instituto Rugby Para Todos realiza Team Building para colaboradores da Renault em Curitiba",
@@ -585,6 +587,8 @@ export const institutional = {
     contentTitle: "Stories & news.",
     contentBody: "Follow activities, reports, interviews and stories from our projects.",
     archive: "Institute archive",
+    contentPhotoAlt:
+      "Institute athletes kneeling on the field during training, in yellow kits.",
     newsTitle: "On and off the field.",
     news: [
       "Instituto Rugby Para Todos runs Team Building for Renault employees in Curitiba",
@@ -692,6 +696,8 @@ export const institutional = {
     contentTitle: "Actualités.",
     contentBody: "Découvrez les actions, reportages, entretiens et histoires de nos projets.",
     archive: "Archives de l’Institut",
+    contentPhotoAlt:
+      "Athlètes de l’Institut à genoux sur le terrain pendant un entraînement, en maillot jaune.",
     newsTitle: "Sur et hors du terrain.",
     news: [
       "L’Instituto Rugby Para Todos organise un Team Building pour Renault à Curitiba",

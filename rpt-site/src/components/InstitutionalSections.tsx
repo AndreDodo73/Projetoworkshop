@@ -462,7 +462,11 @@ export function ContentSection({ language }: { language: SiteLanguage }) {
       </div>
       <div className="content-editorial">
         <div className="content-image reveal reveal-image">
-          <img src="/assets/fb2b9.png" alt={t.archive} loading="lazy" />
+          <img
+            src="/assets/054c1.png"
+            alt={t.contentPhotoAlt}
+            loading="lazy"
+          />
           <span>{t.archive}</span>
         </div>
         <div className="content-news reveal">
