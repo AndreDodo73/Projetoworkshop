@@ -222,7 +222,12 @@ export function ShopSection({ language }: { language: SiteLanguage }) {
         <p>{t.shopSectionBody}</p>
       </div>
       <div className="shop-rail-wrap">
-        <button type="button" className="stories-nav" onClick={() => scrollRail(-1)} aria-label={t.shopPrev}>
+        <button
+          type="button"
+          className="stories-nav project-nav"
+          onClick={() => scrollRail(-1)}
+          aria-label={t.shopPrev}
+        >
           ‹
         </button>
         <div className="shop-rail" ref={railRef}>
@@ -247,10 +252,9 @@ export function ShopSection({ language }: { language: SiteLanguage }) {
         </div>
         <button
           type="button"
-          className="stories-nav stories-nav-next"
+          className="stories-nav stories-nav-next project-nav"
           onClick={() => scrollRail(1)}
           aria-label={t.shopNext}
-          title={t.shopNext}
         >
           ›
         </button>
