@@ -1240,6 +1240,10 @@ footer button {
 .motion-ready .story-stage.is-visible:hover .story-photo img {
   transform: scale(1.045);
 }
+.motion-ready .service-card.is-visible:hover,
+.motion-ready .service-card.is-visible:focus-within {
+  transform: translateY(-10px);
+}
 .motion-ready .shop-card.reveal,
 .motion-ready .service-card.reveal {
   transition-delay: calc(var(--stagger, 0) * var(--motion-stagger));
@@ -1271,7 +1275,9 @@ footer button {
 .motion-ready .section-intro.is-visible > p {
   animation: storyTextIn 0.85s 0.15s var(--ease-out) both;
 }
-.motion-ready .metrics.is-visible .metric,
+.motion-ready .metrics.is-visible .metric {
+  animation: metricPop 0.95s var(--ease-frame) both;
+}
 .motion-ready .supporter-grid.is-visible > div {
   animation: storyTextIn 0.8s var(--ease-out) both;
 }
@@ -1295,6 +1301,23 @@ footer button {
 }
 .motion-ready .supporter-grid > div:nth-child(7) {
   animation-delay: 480ms;
+}
+@keyframes metricPop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 36px, 0) scale(0.94);
+    filter: blur(6px);
+  }
+  62% {
+    opacity: 1;
+    transform: translate3d(0, -6px, 0) scale(1.015);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
 }
 @keyframes headingEnter {
   from {
@@ -1884,6 +1907,8 @@ footer {
   }
   .shop-card:hover,
   .shop-card:focus-within,
+  .service-card:hover,
+  .service-card:focus-within,
   .hero-cta:hover,
   .hero-cta:active,
   .stories-nav:hover,

@@ -87,7 +87,8 @@
 }
 .shop-card:hover,
 .shop-card:focus-within {
-  transform: translateY(-4px);
+  transform: translateY(-8px);
+  box-shadow: 0 18px 40px rgb(21 22 21 / 10%);
 }
 .shop-card-media {
   aspect-ratio: 4 / 5;
@@ -431,6 +432,11 @@
   min-width: 0;
   overflow: hidden;
   box-sizing: border-box;
+  transition: transform 0.6s var(--ease-frame, var(--ease-out));
+}
+.service-card:hover,
+.service-card:focus-within {
+  transform: translateY(-10px);
 }
 .service-image {
   aspect-ratio: 370 / 232;
