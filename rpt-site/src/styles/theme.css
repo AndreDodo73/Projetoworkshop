@@ -9,8 +9,8 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   /* Framer-like springy exit for scroll reveals */
   --ease-frame: cubic-bezier(0.16, 1, 0.3, 1);
-  --motion-y: 36px;
-  --motion-x: 28px;
-  --motion-duration: 0.85s;
-  --motion-stagger: 70ms;
+  --motion-y: 56px;
+  --motion-x: 40px;
+  --motion-duration: 1.05s;
+  --motion-stagger: 90ms;
 }
