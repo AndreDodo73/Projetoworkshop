@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="YouTube">
+  <circle cx="32" cy="32" r="32" fill="#f39200"/>
+  <rect x="16" y="22" width="32" height="20" rx="6" fill="#ffffff"/>
+  <path fill="#f39200" d="M28 26.5v11l10-5.5-10-5.5z"/>
+</svg>

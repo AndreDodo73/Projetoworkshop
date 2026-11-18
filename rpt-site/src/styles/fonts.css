@@ -1,0 +1,57 @@
+/* Exact face aliases from Figma. Keep the colon and quote each family name. */
+@font-face {
+  font-family: "Hind:Bold";
+  src:
+    url("/fonts/hind-bold.ttf"),
+    url("https://static.figma.com/font/Hind-Bold_1") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Hind:Regular";
+  src:
+    url("/fonts/hind-regular.ttf"),
+    url("https://static.figma.com/font/Hind-Regular_1") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Hind:SemiBold";
+  src:
+    url("/fonts/hind-semibold.ttf"),
+    url("https://static.figma.com/font/Hind-SemiBold_1") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Montserrat:Bold";
+  src:
+    url("/fonts/montserrat-variable.ttf"),
+    url("https://static.figma.com/font/Montserrat_wght__2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Montserrat:Medium";
+  src:
+    url("/fonts/montserrat-variable.ttf"),
+    url("https://static.figma.com/font/Montserrat_wght__2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Montserrat:Regular";
+  src:
+    url("/fonts/montserrat-variable.ttf"),
+    url("https://static.figma.com/font/Montserrat_wght__2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Montserrat:SemiBold";
+  src:
+    url("/fonts/montserrat-variable.ttf"),
+    url("https://static.figma.com/font/Montserrat_wght__2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+}

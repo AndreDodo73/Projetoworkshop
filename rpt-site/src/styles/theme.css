@@ -1,0 +1,10 @@
+/* Shared runtime tokens. Layout/component rules remain in their existing files. */
+:root {
+  --orange: #f39200;
+  --yellow: #fead34;
+  --ink: #151615;
+  --charcoal: #252626;
+  --paper: #f4f4f4;
+  --grey: #7b7b7c;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
