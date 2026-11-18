@@ -52,8 +52,11 @@
 }
 .shop-rail {
   display: flex;
+  align-items: stretch;
   gap: 18px;
   overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   padding: 4px 4px 18px;
@@ -68,6 +71,7 @@
   min-width: 0;
   background: var(--paper);
   overflow: hidden;
+  overflow-y: hidden;
 }
 .shop-card-media {
   aspect-ratio: 4 / 5;
