@@ -450,6 +450,9 @@
   object-position: center;
   transition: transform 0.8s var(--ease-out);
 }
+.service-card:first-child .service-image img {
+  object-position: 64% center;
+}
 .service-image > span {
   position: absolute;
   top: 18px;

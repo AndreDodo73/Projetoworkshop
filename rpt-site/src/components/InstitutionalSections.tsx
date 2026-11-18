@@ -279,7 +279,7 @@ export function ServicesSection({ language }: { language: SiteLanguage }) {
           <article className="service-card reveal reveal-x" key={title}>
             <div className="service-image">
               <img
-                src={`/assets/${["54817.png", "e9a3a.png", "46562.png"][i]}`}
+                src={`/assets/${["clinica-rugby.jpg", "e9a3a.png", "46562.png"][i]}`}
                 alt={title}
                 loading="lazy"
               />
