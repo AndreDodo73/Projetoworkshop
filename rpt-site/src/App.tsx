@@ -277,7 +277,6 @@ export default function App() {
     { id: "impacto", label: t.nav[0] },
     { id: "historias", label: t.nav[1] },
     { id: "projetos", label: t.nav[2] },
-    { id: "parceiros", label: t.nav[3] },
   ] as const;
   const navItems = [...primaryNav, ...extra.links];
   const person = storyPeople[activeStory];
