@@ -668,13 +668,6 @@
   align-items: center;
   padding: clamp(28px, 3.5vw, 48px);
 }
-.donation-panel-unified::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 5px;
-  background: linear-gradient(90deg, var(--orange), var(--yellow));
-}
 .donation-intro {
   max-width: none;
   padding: 0;
