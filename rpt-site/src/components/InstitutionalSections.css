@@ -54,10 +54,10 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 4px;
-  max-width: 1440px;
+  gap: 6px;
+  max-width: 1224px;
   margin: 0 auto;
-  padding: 0 8px;
+  padding: 0 12px 0 24px;
 }
 .shop-rail {
   display: flex;
@@ -81,6 +81,13 @@
   background: var(--paper);
   overflow: hidden;
   overflow-y: hidden;
+  transition:
+    transform 0.55s var(--ease-frame, var(--ease-out)),
+    box-shadow 0.55s var(--ease-frame, var(--ease-out));
+}
+.shop-card:hover,
+.shop-card:focus-within {
+  transform: translateY(-4px);
 }
 .shop-card-media {
   aspect-ratio: 4 / 5;

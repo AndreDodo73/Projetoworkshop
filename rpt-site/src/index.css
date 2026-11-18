@@ -427,7 +427,7 @@ footer button {
 .section-intro {
   padding: 0 clamp(24px, 7.5vw, 108px);
   margin: 0 auto 64px;
-  max-width: 1440px;
+  max-width: 1224px;
   display: grid;
   grid-template-columns: 1.25fr 0.75fr;
   gap: 10vw;
@@ -860,10 +860,10 @@ footer button {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 4px;
-  max-width: 1440px;
+  gap: 6px;
+  max-width: 1224px;
   margin: 0 auto;
-  padding: 0 8px;
+  padding: 0 12px 0 24px;
 }
 .project-rail {
   display: flex;
@@ -1767,10 +1767,17 @@ footer {
   .hero-bottom {
     transform: none !important;
   }
-  .motion-ready .reveal {
+  .motion-ready .reveal,
+  .motion-ready .method-values.reveal > li,
+  .motion-ready .award-list .award-link,
+  .motion-ready .document-list .document-link {
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;
+  }
+  .shop-card:hover,
+  .shop-card:focus-within {
+    transform: none !important;
   }
   .motion-ready .reveal-image img {
     clip-path: none !important;
