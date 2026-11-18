@@ -475,12 +475,21 @@
 }
 .service-copy h3 {
   color: var(--yellow);
-  margin-bottom: 22px;
+  margin: 0 0 22px;
+  min-height: 2.4em;
+  line-height: 1.2;
 }
 .service-copy > p,
 .service-copy details p {
   font: 400 16px/1.65 "Hind:Regular";
   color: #ddd;
+}
+.service-copy > p {
+  min-height: calc(1.65em * 4);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .service-copy details {
   margin-top: 26px;

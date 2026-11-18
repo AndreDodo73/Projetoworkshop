@@ -423,9 +423,9 @@ export const institutional = {
       "Oferecemos meios para capacitar pessoas a enfrentar desafios, desenvolver ideias, inovar e gerar impactos positivos. Nossa metodologia ajuda indivíduos, grupos e organizações.",
     serviceTitles: ["Clínica de Rugby", "Team Building", "Intercâmbio Social"],
     serviceDescriptions: [
-      "Aprender rugby é também aprender respeito, lealdade e trabalho em equipe. Uma metodologia para ensinar o esporte e desenvolver pessoas.",
-      "O Rugby Para Todos Experience leva os valores de um dos esportes mais coletivos para dentro das organizações.",
-      "Encontros com clubes de rugby para compartilhar experiências sociais, culturais e esportivas além das fronteiras.",
+      "Aprender rugby é também aprender respeito, lealdade e trabalho em equipe. A clínica ensina o esporte e desenvolve pessoas, dentro e fora de campo.",
+      "O Rugby Para Todos Experience leva os valores de um dos esportes mais coletivos para dentro das organizações, unindo teoria e prática no mesmo encontro.",
+      "Encontros com clubes de rugby para compartilhar experiências sociais, culturais e esportivas, abrindo caminhos para os jovens além das fronteiras.",
     ],
     serviceDetails: [
       "Atividades para crianças de 6 a 10 anos, adolescentes de 11 a 15 anos, jovens de 16 a 18 anos e adultos que desejam vivenciar a metodologia do Instituto.",
@@ -530,9 +530,9 @@ export const institutional = {
       "We help people face challenges, develop ideas, innovate and make a positive impact. Our methodology supports individuals, groups and organizations.",
     serviceTitles: ["Rugby Clinic", "Team Building", "Social Exchange"],
     serviceDescriptions: [
-      "Learning rugby also means learning respect, loyalty and teamwork. A methodology that teaches sport and develops people.",
-      "Rugby Para Todos Experience brings the values of one of the most collaborative sports into organizations.",
-      "Meetings with rugby clubs to share social, cultural and sporting experiences across borders.",
+      "Learning rugby also means learning respect, loyalty and teamwork. The clinic teaches the sport and develops people, on and off the field.",
+      "Rugby Para Todos Experience brings the values of one of the most collaborative sports into organizations, joining theory and practice in one session.",
+      "Meetings with rugby clubs to share social, cultural and sporting experiences, opening paths for young people beyond borders.",
     ],
     serviceDetails: [
       "Activities for children aged 6–10, adolescents aged 11–15, young people aged 16–18 and adults who want to experience the Institute's methodology.",
@@ -636,9 +636,9 @@ export const institutional = {
       "Nous aidons à relever des défis, développer des idées, innover et avoir un impact positif. Notre méthode accompagne les individus, les groupes et les organisations.",
     serviceTitles: ["Initiation au rugby", "Team Building", "Échange social"],
     serviceDescriptions: [
-      "Apprendre le rugby, c’est aussi apprendre le respect, la loyauté et le travail d’équipe. Une méthode pour enseigner le sport et développer les personnes.",
-      "Rugby Para Todos Experience apporte les valeurs de l’un des sports les plus collectifs au cœur des organisations.",
-      "Des rencontres avec des clubs de rugby pour partager des expériences sociales, culturelles et sportives au-delà des frontières.",
+      "Apprendre le rugby, c’est aussi apprendre le respect, la loyauté et le travail d’équipe. L’initiation enseigne le sport et développe les personnes, sur et hors du terrain.",
+      "Rugby Para Todos Experience apporte les valeurs de l’un des sports les plus collectifs au cœur des organisations, en réunissant théorie et pratique.",
+      "Des rencontres avec des clubs de rugby pour partager des expériences sociales, culturelles et sportives, et ouvrir des chemins aux jeunes au-delà des frontières.",
     ],
     serviceDetails: [
       "Activités pour les enfants de 6 à 10 ans, les adolescents de 11 à 15 ans, les jeunes de 16 à 18 ans et les adultes souhaitant découvrir notre méthode.",
