@@ -1104,14 +1104,21 @@ footer button {
 
 .motion-ready .reveal {
   opacity: 0;
-  transform: translateY(42px);
+  transform: translate3d(0, var(--motion-y), 0) scale(0.985);
   transition:
-    opacity 0.8s ease,
-    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity var(--motion-duration) ease,
+    transform calc(var(--motion-duration) + 0.1s) var(--ease-frame);
+  will-change: opacity, transform;
 }
 .motion-ready .reveal.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0) scale(1);
+}
+.motion-ready .reveal-x {
+  transform: translate3d(var(--motion-x), 0, 0) scale(0.985);
+}
+.motion-ready .reveal-x.is-visible {
+  transform: translate3d(0, 0, 0) scale(1);
 }
 .motion-ready .reveal-image {
   transform: none;
@@ -1120,11 +1127,31 @@ footer button {
 .motion-ready .reveal-image img {
   clip-path: inset(0 0 0 100%);
   transition:
-    clip-path 1.15s var(--ease-out),
-    transform 1s var(--ease-out);
+    clip-path 1.15s var(--ease-frame),
+    transform 1s var(--ease-frame);
 }
 .motion-ready .reveal-image.is-visible img {
   clip-path: inset(0);
+}
+.motion-ready .shop-card.reveal,
+.motion-ready .service-card.reveal {
+  transition-delay: calc(var(--stagger, 0) * var(--motion-stagger));
+}
+.motion-ready .method-values.reveal > li,
+.motion-ready .award-list .award-link,
+.motion-ready .document-list .document-link {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 0.55s ease,
+    transform 0.7s var(--ease-frame);
+  transition-delay: calc(var(--stagger, 0) * var(--motion-stagger));
+}
+.motion-ready .method-values.reveal.is-visible > li,
+.motion-ready .document-list.reveal.is-visible .document-link,
+.motion-ready .awards-band.reveal.is-visible .award-link {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 .motion-ready .section-intro.is-visible h2,
 .motion-ready .impact-copy.is-visible h2,

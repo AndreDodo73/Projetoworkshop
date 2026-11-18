@@ -234,7 +234,7 @@ export function ShopSection({ language }: { language: SiteLanguage }) {
           {shopProducts.map((product) => {
             const name = product.name[language];
             return (
-              <article className="shop-card reveal" key={product.id}>
+              <article className="shop-card reveal reveal-x" key={product.id}>
                 <div className="shop-card-media">
                   <img src={`/assets/${product.image}`} alt="" loading="lazy" />
                 </div>
@@ -276,7 +276,7 @@ export function ServicesSection({ language }: { language: SiteLanguage }) {
       </div>
       <div className="service-grid">
         {t.serviceTitles.map((title, i) => (
-          <article className="service-card reveal" key={title}>
+          <article className="service-card reveal reveal-x" key={title}>
             <div className="service-image">
               <img
                 src={`/assets/${["54817.png", "e9a3a.png", "46562.png"][i]}`}

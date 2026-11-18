@@ -360,7 +360,24 @@ export default function App() {
       { rootMargin: "0px 0px -8%", threshold: 0.12 },
     );
     const revealElements = document.querySelectorAll(".reveal");
-    revealElements.forEach((element) => revealObserver.observe(element));
+    revealElements.forEach((element, index) => {
+      if (element instanceof HTMLElement && !element.style.getPropertyValue("--stagger")) {
+        const siblings = element.parentElement?.querySelectorAll(":scope > .reveal");
+        if (siblings && siblings.length > 1) {
+          const order = Array.from(siblings).indexOf(element);
+          if (order >= 0) element.style.setProperty("--stagger", String(order));
+        } else if (element.parentElement?.classList.contains("method-values")) {
+          element.style.setProperty("--stagger", String(index % 5));
+        }
+      }
+      revealObserver.observe(element);
+    });
+    document.querySelectorAll(".method-values > li").forEach((item, order) => {
+      if (item instanceof HTMLElement) item.style.setProperty("--stagger", String(order));
+    });
+    document.querySelectorAll(".award-list .award-link, .document-list .document-link").forEach((item, order) => {
+      if (item instanceof HTMLElement) item.style.setProperty("--stagger", String(Math.min(order, 8)));
+    });
 
     return () => {
       sectionObserver.disconnect();
