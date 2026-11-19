@@ -298,7 +298,6 @@ export function ShopSection({ language }: { language: SiteLanguage }) {
                     href={shopWhatsAppHref(name, language, {
                       size,
                       color: selectedColor?.label[language],
-                      price,
                     })}
                   >
                     {t.shopCardCta}

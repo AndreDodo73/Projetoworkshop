@@ -51,6 +51,7 @@ export const shopProducts: readonly ShopProduct[] = [
     id: "camisa",
     image: "shop/camisa.webp",
     apparel: true,
+    priceCents: 18900,
     name: { pt: "Camisa RPT", en: "RPT jersey", fr: "Maillot RPT" },
     blurb: {
       pt: "Polo amarela para vestir a causa em campo.",
@@ -62,6 +63,7 @@ export const shopProducts: readonly ShopProduct[] = [
     id: "camiseta",
     image: "shop/camiseta.webp",
     apparel: true,
+    priceCents: 12900,
     name: { pt: "Camiseta RPT", en: "RPT t-shirt", fr: "T-shirt RPT" },
     blurb: {
       pt: "Camiseta branca para o treino e o dia a dia.",
@@ -73,6 +75,7 @@ export const shopProducts: readonly ShopProduct[] = [
     id: "agasalho",
     image: "shop/agasalho.webp",
     apparel: true,
+    priceCents: 34900,
     name: { pt: "Agasalho RPT", en: "RPT jacket", fr: "Veste RPT" },
     blurb: {
       pt: "Jaqueta preta e amarela para chegar e sair do treino.",
@@ -84,6 +87,7 @@ export const shopProducts: readonly ShopProduct[] = [
     id: "bone",
     image: "shop/bone.webp",
     apparel: false,
+    priceCents: 12000,
     name: { pt: "Boné RPT", en: "RPT cap", fr: "Casquette RPT" },
     blurb: {
       pt: "Boné preto com o monograma do instituto.",
@@ -95,6 +99,7 @@ export const shopProducts: readonly ShopProduct[] = [
     id: "mochila",
     image: "shop/mochila.webp",
     apparel: false,
+    priceCents: 27900,
     name: { pt: "Mochila RPT", en: "RPT backpack", fr: "Sac à dos RPT" },
     blurb: {
       pt: "Mochila para levar o rugby pra todo lado.",
@@ -106,6 +111,7 @@ export const shopProducts: readonly ShopProduct[] = [
     id: "bolsa",
     image: "shop/bolsa.webp",
     apparel: false,
+    priceCents: 24900,
     name: { pt: "Bolsa RPT", en: "RPT duffel", fr: "Sac de sport RPT" },
     blurb: {
       pt: "Bolsa esportiva para treino e viagem.",
@@ -117,6 +123,7 @@ export const shopProducts: readonly ShopProduct[] = [
     id: "squeeze",
     image: "shop/squeeze.webp",
     apparel: false,
+    priceCents: 15900,
     colors: [
       {
         id: "amarelo",
@@ -140,6 +147,7 @@ export const shopProducts: readonly ShopProduct[] = [
     id: "bola",
     image: "shop/bola.webp",
     apparel: false,
+    priceCents: 19900,
     name: { pt: "Bola de rugby RPT", en: "RPT rugby ball", fr: "Ballon de rugby RPT" },
     blurb: {
       pt: "A bola que começa o jogo e abre caminhos.",
