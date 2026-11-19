@@ -9,3 +9,5 @@ dist
 public/assets/_incoming/
 .archive/
 public/media/_source/
+# Design references — not for public/publish upload
+docs/references/
