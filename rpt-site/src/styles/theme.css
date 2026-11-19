@@ -13,4 +13,7 @@
   --motion-x: 40px;
   --motion-duration: 1.05s;
   --motion-stagger: 90ms;
+  /* Header fixo + folga — âncoras do menu e links #seção */
+  --site-header-height: 120px;
+  --site-anchor-offset: calc(var(--site-header-height) + 16px);
 }

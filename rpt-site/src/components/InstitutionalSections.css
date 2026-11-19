@@ -44,8 +44,9 @@
 #transparencia,
 #loja,
 #doe,
-#conteudos {
-  scroll-margin-top: 110px;
+#conteudos,
+#conteudo {
+  scroll-margin-top: var(--site-anchor-offset);
 }
 .shop {
   background: var(--paper);

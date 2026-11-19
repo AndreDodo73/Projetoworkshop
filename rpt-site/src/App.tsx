@@ -17,6 +17,7 @@ import {
   runningProjects,
   storyPeople,
 } from "./content/institutional";
+import { scrollToAnchor, syncAnchorOffset } from "./lib/scrollToAnchor";
 
 type Language = "pt" | "en" | "fr";
 
@@ -300,6 +301,7 @@ export default function App() {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       setScrollProgress(maxScroll > 0 ? window.scrollY / maxScroll : 0);
       setIsScrolled(window.scrollY > 24);
+      syncAnchorOffset();
       frame = 0;
     };
     const onScroll = () => {
@@ -307,10 +309,22 @@ export default function App() {
     };
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", update);
       if (frame) cancelAnimationFrame(frame);
     };
+  }, []);
+
+  useEffect(() => {
+    const hash = window.location.hash.replace(/^#/, "");
+    if (!hash) return;
+    const frame = requestAnimationFrame(() => {
+      scrollToAnchor(hash, "auto");
+      setActiveSection(hash);
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {
@@ -387,21 +401,7 @@ export default function App() {
   }, [language]);
 
   const goTo = (id: string) => {
-    const section = document.getElementById(id);
-    if (!section) return;
-
-    // Impacto is a tall block: land on the metrics so the numbers are on screen.
-    const target =
-      id === "impacto"
-        ? section.querySelector<HTMLElement>(".metrics") ?? section
-        : section;
-
-    const header = document.querySelector<HTMLElement>(".site-header");
-    const headerOffset = (header?.offsetHeight ?? 96) + 12;
-    const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - headerOffset);
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
+    if (!scrollToAnchor(id)) return;
     setActiveSection(id);
     setMenuOpen(false);
   };
@@ -419,7 +419,15 @@ export default function App() {
       <header className={isScrolled ? "site-header scrolled" : "site-header"}>
         <button
           className="brand"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onClick={() => {
+            const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            (document.scrollingElement ?? document.documentElement).scrollTo({
+              top: 0,
+              behavior: reduceMotion ? "auto" : "smooth",
+            });
+            history.replaceState(null, "", window.location.pathname + window.location.search);
+            setActiveSection("impacto");
+          }}
           aria-label="Rugby Para Todos — início"
         >
           <img src={`${A}/logo-horizontal.png`} alt="Instituto Rugby Para Todos" />
@@ -755,7 +763,15 @@ export default function App() {
           </div>
           <button
             className="back-top"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => {
+            const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            (document.scrollingElement ?? document.documentElement).scrollTo({
+              top: 0,
+              behavior: reduceMotion ? "auto" : "smooth",
+            });
+            history.replaceState(null, "", window.location.pathname + window.location.search);
+            setActiveSection("impacto");
+          }}
           >
             ↑
           </button>
