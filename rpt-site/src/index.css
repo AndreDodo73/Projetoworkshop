@@ -1609,7 +1609,6 @@ footer {
   html:has(.site-header.scrolled) {
     --site-header-height: 82px;
   }
-}
   .brand {
     width: auto;
     max-width: 240px;
