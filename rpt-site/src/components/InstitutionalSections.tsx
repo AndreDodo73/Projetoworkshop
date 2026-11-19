@@ -5,6 +5,7 @@ import {
   documents,
   institutional,
   official,
+  formatShopPrice,
   shopProducts,
   shopWhatsAppHref,
   type SiteLanguage,
@@ -201,6 +202,13 @@ export function ShopSection({ language }: { language: SiteLanguage }) {
   const [sizeByProduct, setSizeByProduct] = useState<Record<string, string>>(() =>
     Object.fromEntries(shopProducts.filter((product) => product.apparel).map((product) => [product.id, "M"])),
   );
+  const [colorByProduct, setColorByProduct] = useState<Record<string, string>>(() =>
+    Object.fromEntries(
+      shopProducts
+        .filter((product) => product.colors)
+        .map((product) => [product.id, product.colors?.[0].id ?? ""]),
+    ),
+  );
   const scrollRail = (direction: -1 | 1) => {
     const rail = railRef.current;
     if (!rail) return;
@@ -233,15 +241,24 @@ export function ShopSection({ language }: { language: SiteLanguage }) {
           {shopProducts.map((product) => {
             const name = product.name[language];
             const size = product.apparel ? sizeByProduct[product.id] ?? "M" : undefined;
+            const palette = product.colors;
+            const selectedColor = palette?.find((option) => option.id === colorByProduct[product.id]) ?? palette?.[0];
+            const image = selectedColor?.image ?? product.image;
+            const price =
+              product.priceCents == null ? undefined : formatShopPrice(product.priceCents, language);
             return (
               <article className="shop-card reveal reveal-x" key={product.id}>
                 <div className="shop-card-media">
-                  <img src={`/assets/${product.image}`} alt="" loading="lazy" />
+                  <img src={`/assets/${image}`} alt={name} loading="lazy" />
                 </div>
                 <div className="shop-card-copy">
                   <h3>{name}</h3>
-                  <p>{product.blurb[language]}</p>
-                  <p className="shop-card-price">{t.shopPriceNote}</p>
+                  <p className="shop-card-blurb">{product.blurb[language]}</p>
+                  <div className="shop-price">
+                    <p className="shop-price-kicker">{t.shopPriceLabel}</p>
+                    <p className="shop-card-price">{price ?? t.shopPriceNote}</p>
+                    <p className="shop-card-shipping">{t.shopShipping}</p>
+                  </div>
                   {product.apparel ? (
                     <div className="shop-sizes" role="group" aria-label={`${t.shopSizeLabel} ${name}`}>
                       {apparelSizes.map((option) => (
@@ -257,11 +274,33 @@ export function ShopSection({ language }: { language: SiteLanguage }) {
                         </button>
                       ))}
                     </div>
+                  ) : palette && selectedColor ? (
+                    <div className="shop-sizes" role="group" aria-label={`${t.shopColor} ${name}`}>
+                      {palette.map((option) => (
+                        <button
+                          key={option.id}
+                          type="button"
+                          aria-pressed={selectedColor.id === option.id}
+                          onClick={() =>
+                            setColorByProduct((current) => ({ ...current, [product.id]: option.id }))
+                          }
+                        >
+                          <i className={`shop-swatch shop-swatch-${option.id}`} aria-hidden="true" />
+                          {option.label[language]}
+                        </button>
+                      ))}
+                    </div>
                   ) : (
                     <p className="shop-one-size">{t.shopOneSize}</p>
                   )}
-                  <p className="shop-card-shipping">{t.shopShipping}</p>
-                  <Outbound className="shop-card-cta" href={shopWhatsAppHref(name, language, size)}>
+                  <Outbound
+                    className="shop-card-cta"
+                    href={shopWhatsAppHref(name, language, {
+                      size,
+                      color: selectedColor?.label[language],
+                      price,
+                    })}
+                  >
                     {t.shopCardCta}
                   </Outbound>
                 </div>

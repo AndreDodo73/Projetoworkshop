@@ -32,7 +32,21 @@ export const official = {
 
 export const apparelSizes = ["P", "M", "G", "GG", "XG"] as const;
 
-export const shopProducts = [
+export type ShopProduct = {
+  id: string;
+  image: string;
+  apparel: boolean;
+  priceCents?: number;
+  colors?: readonly {
+    id: string;
+    image: string;
+    label: Record<SiteLanguage, string>;
+  }[];
+  name: Record<SiteLanguage, string>;
+  blurb: Record<SiteLanguage, string>;
+};
+
+export const shopProducts: readonly ShopProduct[] = [
   {
     id: "camisa",
     image: "shop/camisa.webp",
@@ -103,6 +117,18 @@ export const shopProducts = [
     id: "squeeze",
     image: "shop/squeeze.webp",
     apparel: false,
+    colors: [
+      {
+        id: "amarelo",
+        image: "shop/squeeze.webp",
+        label: { pt: "Amarelo", en: "Yellow", fr: "Jaune" },
+      },
+      {
+        id: "preto",
+        image: "shop/squeeze-preto.webp",
+        label: { pt: "Preto", en: "Black", fr: "Noir" },
+      },
+    ],
     name: { pt: "Squeeze RPT", en: "RPT bottle", fr: "Gourde RPT" },
     blurb: {
       pt: "Para hidratar dentro e fora de campo.",
@@ -121,9 +147,23 @@ export const shopProducts = [
       fr: "Le ballon qui lance le jeu et ouvre des chemins.",
     },
   },
-] as const;
+];
 
-export function shopWhatsAppHref(productName: string, language: SiteLanguage, size?: string) {
+export function formatShopPrice(cents: number, language: SiteLanguage) {
+  return new Intl.NumberFormat(language === "en" ? "en-US" : language === "fr" ? "fr-FR" : "pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(cents / 100);
+}
+
+export function shopWhatsAppHref(
+  productName: string,
+  language: SiteLanguage,
+  detail?: { size?: string; color?: string; price?: string },
+) {
+  const size = detail?.size;
+  const color = detail?.color;
+  const price = detail?.price;
   const sizeLine =
     language === "en"
       ? size
@@ -136,12 +176,31 @@ export function shopWhatsAppHref(productName: string, language: SiteLanguage, si
         : size
           ? `, tamanho ${size}`
           : "";
+  const colorLine =
+    language === "en"
+      ? color
+        ? `, color ${color}`
+        : ""
+      : language === "fr"
+        ? color
+          ? `, couleur ${color}`
+          : ""
+        : color
+          ? `, cor ${color}`
+          : "";
+  const priceLine = price
+    ? language === "en"
+      ? `, price ${price}`
+      : language === "fr"
+        ? `, prix ${price}`
+        : `, valor ${price}`
+    : "";
   const intro =
     language === "en"
-      ? `Hi! I'd like to order this RPT product: ${productName}${sizeLine}`
+      ? `Hi! I'd like to order this RPT product: ${productName}${sizeLine}${colorLine}${priceLine}`
       : language === "fr"
-        ? `Bonjour ! Je souhaite commander ce produit RPT : ${productName}${sizeLine}`
-        : `Olá! Quero pedir este produto RPT: ${productName}${sizeLine}`;
+        ? `Bonjour ! Je souhaite commander ce produit RPT : ${productName}${sizeLine}${colorLine}${priceLine}`
+        : `Olá! Quero pedir este produto RPT: ${productName}${sizeLine}${colorLine}${priceLine}`;
   return `https://wa.me/${official.whatsapp}?text=${encodeURIComponent(intro)}`;
 }
 
@@ -423,8 +482,10 @@ export const institutional = {
     shopCardCta: "Pedir no WhatsApp",
     shopShipping: "Frete não incluso",
     shopPriceNote: "Sob consulta",
+    shopPriceLabel: "Valor",
     shopSizeLabel: "Tamanho",
     shopOneSize: "Tamanho único",
+    shopColor: "Cor",
     shopPrev: "Produtos anteriores",
     shopNext: "Próximos produtos",
     methodEyebrow: "Como transformamos",
@@ -535,8 +596,10 @@ export const institutional = {
     shopCardCta: "Order on WhatsApp",
     shopShipping: "Shipping not included",
     shopPriceNote: "Price on request",
+    shopPriceLabel: "Price",
     shopSizeLabel: "Size",
     shopOneSize: "One size",
+    shopColor: "Color",
     shopPrev: "Previous products",
     shopNext: "Next products",
     methodEyebrow: "How we make a difference",
@@ -646,8 +709,10 @@ export const institutional = {
     shopCardCta: "Commander sur WhatsApp",
     shopShipping: "Frais de port non inclus",
     shopPriceNote: "Prix sur demande",
+    shopPriceLabel: "Prix",
     shopSizeLabel: "Taille",
     shopOneSize: "Taille unique",
+    shopColor: "Couleur",
     shopPrev: "Produits précédents",
     shopNext: "Produits suivants",
     methodEyebrow: "Notre approche",
