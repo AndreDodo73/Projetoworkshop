@@ -486,7 +486,7 @@ export const institutional = {
     shopEyebrow: "Loja RPT",
     shopSectionTitle: "Vista essa causa.",
     shopSectionBody:
-      "Camisa, camiseta, agasalho, boné, mochila, bolsa, squeeze e bola com a cara do Rugby Para Todos. Escolha um item e fale com a gente no WhatsApp para pedir.",
+      "Camisa, camiseta, agasalho, boné, mochila, bolsa, squeeze e bola com a cara do Rugby Para Todos. Peça pelo WhatsApp: vista solidariedade e ajude a formar cidadãos dentro e fora de campo.",
     shopCardCta: "Pedir no WhatsApp",
     shopShipping: "Frete não incluso",
     shopPriceNote: "Sob consulta",
@@ -600,7 +600,7 @@ export const institutional = {
     shopEyebrow: "RPT shop",
     shopSectionTitle: "Wear the cause.",
     shopSectionBody:
-      "Jersey, t-shirt, jacket, cap, backpack, duffel, bottle and rugby ball with Rugby Para Todos spirit. Pick an item and message us on WhatsApp to order.",
+      "Jersey, t-shirt, jacket, cap, backpack, duffel, bottle and rugby ball with the Rugby Para Todos spirit. Order on WhatsApp — wear solidarity and help form citizens on and off the field.",
     shopCardCta: "Order on WhatsApp",
     shopShipping: "Shipping not included",
     shopPriceNote: "Price on request",
@@ -713,7 +713,7 @@ export const institutional = {
     shopEyebrow: "Boutique RPT",
     shopSectionTitle: "Portez cette cause.",
     shopSectionBody:
-      "Maillot, t-shirt, veste, casquette, sac à dos, sac de sport, gourde et ballon à l’image de Rugby Para Todos. Choisissez un article et écrivez-nous sur WhatsApp pour commander.",
+      "Maillot, t-shirt, veste, casquette, sac à dos, sac de sport, gourde et ballon à l’image de Rugby Para Todos. Commandez sur WhatsApp : portez la solidarité et aidez à former des citoyens sur et hors du terrain.",
     shopCardCta: "Commander sur WhatsApp",
     shopShipping: "Frais de port non inclus",
     shopPriceNote: "Prix sur demande",
