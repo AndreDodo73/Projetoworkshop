@@ -34,6 +34,7 @@ function layoutDocumentTop(el: HTMLElement) {
 /**
  * Rola até a seção/âncora, respeitando o header.
  * Impacto pousa nas métricas para os números aparecerem na tela.
+ * Cliques do menu usam scroll suave (não saltam direto), salvo reduced-motion.
  */
 export function scrollToAnchor(id: string, behavior?: ScrollBehavior) {
   const section = document.getElementById(id);
@@ -55,14 +56,15 @@ export function scrollToAnchor(id: string, behavior?: ScrollBehavior) {
   const offset = syncAnchorOffset(Math.max(layoutTop, 25));
   const top = Math.max(0, layoutTop - offset);
   const distance = Math.abs(top - window.scrollY);
-  // Saltos longos em smooth às vezes param no meio; usa auto nesse caso.
+  // Sempre suave no menu; "auto" só sob pedido explícito ou reduced-motion.
   const scrollBehavior: ScrollBehavior =
-    behavior ?? (reduceMotion || distance > window.innerHeight * 1.75 ? "auto" : "smooth");
+    behavior ?? (reduceMotion ? "auto" : "smooth");
   const scrolling = document.scrollingElement ?? document.documentElement;
 
   const html = document.documentElement;
   const previous = html.style.scrollBehavior;
-  html.style.scrollBehavior = scrollBehavior === "auto" ? "auto" : "";
+  // Evita o CSS html{scroll-behavior:smooth} competir / cortar o scrollTo.
+  html.style.scrollBehavior = "auto";
   scrolling.scrollTo({ top, behavior: scrollBehavior });
   html.style.scrollBehavior = previous;
 
@@ -74,12 +76,16 @@ export function scrollToAnchor(id: string, behavior?: ScrollBehavior) {
       scrolling.scrollBy({ top: drift, behavior: "auto" });
     }
   };
+
   if (scrollBehavior === "smooth") {
-    window.setTimeout(correct, 520);
+    // Saltos longos demoram mais para assentar; corrige no meio e no fim.
+    const settleMs = Math.min(1800, Math.max(520, distance * 0.35));
+    window.setTimeout(correct, Math.min(700, settleMs * 0.45));
+    window.setTimeout(correct, settleMs);
   } else {
     requestAnimationFrame(() => requestAnimationFrame(correct));
+    window.setTimeout(correct, 120);
   }
-  window.setTimeout(correct, 900);
 
   if (history.replaceState) {
     history.replaceState(null, "", `#${id}`);
