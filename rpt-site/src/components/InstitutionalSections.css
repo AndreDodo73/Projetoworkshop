@@ -132,6 +132,56 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+.shop-card-price,
+.shop-one-size {
+  flex: 0;
+  margin: 0;
+}
+.shop-card-price {
+  color: var(--ink);
+  font: 700 18px/1.2 "Montserrat:Bold", Arial, sans-serif;
+  letter-spacing: -0.02em;
+}
+.shop-one-size {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  color: #888;
+  font: 600 11px/1.4 "Montserrat:SemiBold", Arial, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.shop-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 32px;
+}
+.shop-sizes button {
+  min-width: 36px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: 700 11px/1 "Montserrat:Bold", Arial, sans-serif;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    background 0.25s var(--ease-frame, var(--ease-out)),
+    color 0.25s var(--ease-frame, var(--ease-out)),
+    border-color 0.25s var(--ease-frame, var(--ease-out));
+}
+.shop-sizes button[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: white;
+}
+.shop-sizes button:hover,
+.shop-sizes button:focus-visible {
+  border-color: var(--orange);
+}
 .shop-card-cta {
   margin-top: 8px;
   width: fit-content;

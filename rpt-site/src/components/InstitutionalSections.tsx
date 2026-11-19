@@ -1,5 +1,6 @@
 import { useRef, useState, type ReactNode } from "react";
 import {
+  apparelSizes,
   awardsList,
   documents,
   institutional,
@@ -197,6 +198,9 @@ export function MethodologySection({ language }: { language: SiteLanguage }) {
 export function ShopSection({ language }: { language: SiteLanguage }) {
   const t = institutional[language];
   const railRef = useRef<HTMLDivElement>(null);
+  const [sizeByProduct, setSizeByProduct] = useState<Record<string, string>>(() =>
+    Object.fromEntries(shopProducts.filter((product) => product.apparel).map((product) => [product.id, "M"])),
+  );
   const scrollRail = (direction: -1 | 1) => {
     const rail = railRef.current;
     if (!rail) return;
@@ -228,6 +232,7 @@ export function ShopSection({ language }: { language: SiteLanguage }) {
         <div className="shop-rail" ref={railRef}>
           {shopProducts.map((product) => {
             const name = product.name[language];
+            const size = product.apparel ? sizeByProduct[product.id] ?? "M" : undefined;
             return (
               <article className="shop-card reveal reveal-x" key={product.id}>
                 <div className="shop-card-media">
@@ -236,8 +241,27 @@ export function ShopSection({ language }: { language: SiteLanguage }) {
                 <div className="shop-card-copy">
                   <h3>{name}</h3>
                   <p>{product.blurb[language]}</p>
+                  <p className="shop-card-price">{t.shopPriceNote}</p>
+                  {product.apparel ? (
+                    <div className="shop-sizes" role="group" aria-label={`${t.shopSizeLabel} ${name}`}>
+                      {apparelSizes.map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          aria-pressed={size === option}
+                          onClick={() =>
+                            setSizeByProduct((current) => ({ ...current, [product.id]: option }))
+                          }
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="shop-one-size">{t.shopOneSize}</p>
+                  )}
                   <p className="shop-card-shipping">{t.shopShipping}</p>
-                  <Outbound className="shop-card-cta" href={shopWhatsAppHref(name, language)}>
+                  <Outbound className="shop-card-cta" href={shopWhatsAppHref(name, language, size)}>
                     {t.shopCardCta}
                   </Outbound>
                 </div>

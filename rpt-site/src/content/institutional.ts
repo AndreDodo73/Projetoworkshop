@@ -30,10 +30,13 @@ export const official = {
   ],
 };
 
+export const apparelSizes = ["P", "M", "G", "GG", "XG"] as const;
+
 export const shopProducts = [
   {
     id: "camisa",
     image: "shop/camisa.webp",
+    apparel: true,
     name: { pt: "Camisa RPT", en: "RPT jersey", fr: "Maillot RPT" },
     blurb: {
       pt: "Polo amarela para vestir a causa em campo.",
@@ -44,6 +47,7 @@ export const shopProducts = [
   {
     id: "camiseta",
     image: "shop/camiseta.webp",
+    apparel: true,
     name: { pt: "Camiseta RPT", en: "RPT t-shirt", fr: "T-shirt RPT" },
     blurb: {
       pt: "Camiseta branca para o treino e o dia a dia.",
@@ -54,6 +58,7 @@ export const shopProducts = [
   {
     id: "agasalho",
     image: "shop/agasalho.webp",
+    apparel: true,
     name: { pt: "Agasalho RPT", en: "RPT jacket", fr: "Veste RPT" },
     blurb: {
       pt: "Jaqueta preta e amarela para chegar e sair do treino.",
@@ -64,6 +69,7 @@ export const shopProducts = [
   {
     id: "bone",
     image: "shop/bone.webp",
+    apparel: false,
     name: { pt: "Boné RPT", en: "RPT cap", fr: "Casquette RPT" },
     blurb: {
       pt: "Boné preto com o monograma do instituto.",
@@ -74,6 +80,7 @@ export const shopProducts = [
   {
     id: "mochila",
     image: "shop/mochila.webp",
+    apparel: false,
     name: { pt: "Mochila RPT", en: "RPT backpack", fr: "Sac à dos RPT" },
     blurb: {
       pt: "Mochila para levar o rugby pra todo lado.",
@@ -84,6 +91,7 @@ export const shopProducts = [
   {
     id: "bolsa",
     image: "shop/bolsa.webp",
+    apparel: false,
     name: { pt: "Bolsa RPT", en: "RPT duffel", fr: "Sac de sport RPT" },
     blurb: {
       pt: "Bolsa esportiva para treino e viagem.",
@@ -94,6 +102,7 @@ export const shopProducts = [
   {
     id: "squeeze",
     image: "shop/squeeze.webp",
+    apparel: false,
     name: { pt: "Squeeze RPT", en: "RPT bottle", fr: "Gourde RPT" },
     blurb: {
       pt: "Para hidratar dentro e fora de campo.",
@@ -104,6 +113,7 @@ export const shopProducts = [
   {
     id: "bola",
     image: "shop/bola.webp",
+    apparel: false,
     name: { pt: "Bola de rugby RPT", en: "RPT rugby ball", fr: "Ballon de rugby RPT" },
     blurb: {
       pt: "A bola que começa o jogo e abre caminhos.",
@@ -113,13 +123,25 @@ export const shopProducts = [
   },
 ] as const;
 
-export function shopWhatsAppHref(productName: string, language: SiteLanguage) {
+export function shopWhatsAppHref(productName: string, language: SiteLanguage, size?: string) {
+  const sizeLine =
+    language === "en"
+      ? size
+        ? `, size ${size}`
+        : ""
+      : language === "fr"
+        ? size
+          ? `, taille ${size}`
+          : ""
+        : size
+          ? `, tamanho ${size}`
+          : "";
   const intro =
     language === "en"
-      ? `Hi! I'd like to order this RPT product: ${productName}`
+      ? `Hi! I'd like to order this RPT product: ${productName}${sizeLine}`
       : language === "fr"
-        ? `Bonjour ! Je souhaite commander ce produit RPT : ${productName}`
-        : `Olá! Quero pedir este produto RPT: ${productName}`;
+        ? `Bonjour ! Je souhaite commander ce produit RPT : ${productName}${sizeLine}`
+        : `Olá! Quero pedir este produto RPT: ${productName}${sizeLine}`;
   return `https://wa.me/${official.whatsapp}?text=${encodeURIComponent(intro)}`;
 }
 
@@ -400,6 +422,9 @@ export const institutional = {
       "Camisa, camiseta, agasalho, boné, mochila, bolsa, squeeze e bola com a cara do Rugby Para Todos. Escolha um item e fale com a gente no WhatsApp para pedir.",
     shopCardCta: "Pedir no WhatsApp",
     shopShipping: "Frete não incluso",
+    shopPriceNote: "Sob consulta",
+    shopSizeLabel: "Tamanho",
+    shopOneSize: "Tamanho único",
     shopPrev: "Produtos anteriores",
     shopNext: "Próximos produtos",
     methodEyebrow: "Como transformamos",
@@ -509,6 +534,9 @@ export const institutional = {
       "Jersey, t-shirt, jacket, cap, backpack, duffel, bottle and rugby ball with Rugby Para Todos spirit. Pick an item and message us on WhatsApp to order.",
     shopCardCta: "Order on WhatsApp",
     shopShipping: "Shipping not included",
+    shopPriceNote: "Price on request",
+    shopSizeLabel: "Size",
+    shopOneSize: "One size",
     shopPrev: "Previous products",
     shopNext: "Next products",
     methodEyebrow: "How we make a difference",
@@ -617,6 +645,9 @@ export const institutional = {
       "Maillot, t-shirt, veste, casquette, sac à dos, sac de sport, gourde et ballon à l’image de Rugby Para Todos. Choisissez un article et écrivez-nous sur WhatsApp pour commander.",
     shopCardCta: "Commander sur WhatsApp",
     shopShipping: "Frais de port non inclus",
+    shopPriceNote: "Prix sur demande",
+    shopSizeLabel: "Taille",
+    shopOneSize: "Taille unique",
     shopPrev: "Produits précédents",
     shopNext: "Produits suivants",
     methodEyebrow: "Notre approche",
