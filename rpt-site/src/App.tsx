@@ -762,18 +762,20 @@ export default function App() {
             </div>
           </div>
           <button
+            type="button"
             className="back-top"
+            aria-label="Voltar ao topo"
             onClick={() => {
-            const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-            (document.scrollingElement ?? document.documentElement).scrollTo({
-              top: 0,
-              behavior: reduceMotion ? "auto" : "smooth",
-            });
-            history.replaceState(null, "", window.location.pathname + window.location.search);
-            setActiveSection("impacto");
-          }}
+              const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+              (document.scrollingElement ?? document.documentElement).scrollTo({
+                top: 0,
+                behavior: reduceMotion ? "auto" : "smooth",
+              });
+              history.replaceState(null, "", window.location.pathname + window.location.search);
+              setActiveSection("impacto");
+            }}
           >
-            ↑
+            <Arrow />
           </button>
         </div>
         <div className="footer-bottom">

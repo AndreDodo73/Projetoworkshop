@@ -1591,7 +1591,39 @@ footer {
   height: 54px;
   border: 1px solid #aaa;
   border-radius: 50%;
-  font-size: 22px !important;
+  background: transparent;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+.back-top .arrow {
+  /* Mesma seta ↗ do site, rotacionada para apontar para cima. */
+  color: currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.45s var(--ease-out);
+}
+.back-top:hover,
+.back-top:focus-visible {
+  border-color: var(--orange);
+  color: var(--orange);
+  background: rgba(255, 255, 255, 0.7);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(21, 22, 21, 0.12);
+  outline: none;
+}
+.back-top:hover .arrow,
+.back-top:focus-visible .arrow {
+  /* Mesmo “avanço” das outras setas, no eixo da flecha. */
+  transform: rotate(-45deg) translate(3px, -3px);
 }
 .footer-bottom {
   display: flex;
