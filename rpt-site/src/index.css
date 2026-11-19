@@ -79,11 +79,12 @@
 }
 .site-header.scrolled {
   height: 78px;
-  background: rgba(255, 255, 255, 0.52);
-  -webkit-backdrop-filter: blur(18px) saturate(1.35);
-  backdrop-filter: blur(18px) saturate(1.35);
-  border-bottom-color: rgba(21, 22, 21, 0.08);
-  box-shadow: 0 8px 28px rgba(21, 22, 21, 0.06);
+  /* Glass legível: menos transparente que 0.52, ainda com blur. */
+  background: rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  backdrop-filter: blur(16px) saturate(1.2);
+  border-bottom-color: rgba(21, 22, 21, 0.1);
+  box-shadow: 0 8px 28px rgba(21, 22, 21, 0.07);
 }
 .site-header.scrolled ~ *,
 html:has(.site-header.scrolled) {
