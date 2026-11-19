@@ -48,7 +48,7 @@ const copy = {
       ["86", "famílias acompanhadas"],
     ],
     storiesEyebrow: "Vidas em movimento",
-    storiesTitle: "O resultado tem nome, rosto e futuro.",
+    storiesTitle: "O resultado\ntem nome, rosto\ne futuro.",
     storiesBody:
       "Por trás de cada número existe uma trajetória que começou na comunidade e ganhou o mundo.",
     storyLabel: "História",
@@ -104,7 +104,7 @@ const copy = {
       ["86", "families supported"],
     ],
     storiesEyebrow: "Lives in motion",
-    storiesTitle: "Impact has a name, a face and a future.",
+    storiesTitle: "Impact has\na name, a face\nand a future.",
     storiesBody:
       "Behind each number is a journey that began in the community and reached the world.",
     storyLabel: "Story",
@@ -159,7 +159,7 @@ const copy = {
       ["86", "familles accompagnées"],
     ],
     storiesEyebrow: "Des vies en mouvement",
-    storiesTitle: "L’impact a un nom, un visage et un avenir.",
+    storiesTitle: "L’impact a\nun nom, un visage\net un avenir.",
     storiesBody:
       "Derrière chaque chiffre se trouve un parcours né dans la communauté et ouvert sur le monde.",
     storyLabel: "Histoire",
@@ -526,7 +526,14 @@ export default function App() {
         <div className="section-intro on-dark reveal">
           <div>
             <p className="eyebrow light">{t.storiesEyebrow}</p>
-            <h2>{t.storiesTitle}</h2>
+            <h2>
+              {t.storiesTitle.split("\n").map((line, index, lines) => (
+                <span key={line}>
+                  {line}
+                  {index < lines.length - 1 ? <br /> : null}
+                </span>
+              ))}
+            </h2>
           </div>
           <p>{t.storiesBody}</p>
         </div>

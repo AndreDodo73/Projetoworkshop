@@ -521,6 +521,9 @@ footer button {
   overflow: visible;
   padding-bottom: 0.06em;
 }
+.stories .section-intro h2 span {
+  white-space: nowrap;
+}
 .section-intro > p {
   font-size: 18px;
   line-height: 1.5;
