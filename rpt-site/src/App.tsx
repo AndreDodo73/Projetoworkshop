@@ -724,7 +724,7 @@ export default function App() {
       <footer>
         <div className="footer-top">
           <div className="footer-brand">
-            <img src={`${A}/footer-logo-color.png`} alt="Instituto Rugby Para Todos" />
+            <img src={`${A}/footer-logo-color.svg`} alt="Instituto Rugby Para Todos" />
             <p>{t.footerNote}</p>
             <div className="footer-seals" aria-label={t.sealsLabel}>
               {footerSeals.map((seal) => (
@@ -762,7 +762,7 @@ export default function App() {
             </div>
           </div>
           <div className="footer-mark">
-            <img src={`${A}/footer-logo-mono.png`} alt="" aria-hidden="true" />
+            <img src={`${A}/footer-logo-mono.svg`} alt="" aria-hidden="true" />
             <button
               type="button"
               className="back-top"
