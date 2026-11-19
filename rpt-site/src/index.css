@@ -1528,11 +1528,28 @@ footer {
   gap: 8vw;
 }
 .footer-brand img {
-  max-width: 270px;
+  display: block;
+  width: min(148px, 42vw);
+  max-width: 100%;
+  height: auto;
 }
 .footer-brand p {
   margin-top: 24px;
   color: #666;
+}
+.footer-mark {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  min-width: 0;
+}
+.footer-mark img {
+  display: block;
+  width: min(132px, 36vw);
+  max-width: 100%;
+  height: auto;
 }
 .footer-seals {
   display: flex;
@@ -1964,9 +1981,14 @@ footer {
     grid-template-columns: 1fr;
     gap: 48px;
   }
+  .footer-mark {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
   .back-top {
-    position: absolute;
-    right: 24px;
+    position: static;
   }
   .footer-bottom {
     flex-direction: column;

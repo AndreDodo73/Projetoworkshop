@@ -724,7 +724,7 @@ export default function App() {
       <footer>
         <div className="footer-top">
           <div className="footer-brand">
-            <img src={`${A}/ff39b.png`} alt="Instituto Rugby Para Todos" />
+            <img src={`${A}/footer-logo-color.png`} alt="Instituto Rugby Para Todos" />
             <p>{t.footerNote}</p>
             <div className="footer-seals" aria-label={t.sealsLabel}>
               {footerSeals.map((seal) => (
@@ -761,22 +761,25 @@ export default function App() {
               ))}
             </div>
           </div>
-          <button
-            type="button"
-            className="back-top"
-            aria-label="Voltar ao topo"
-            onClick={() => {
-              const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-              (document.scrollingElement ?? document.documentElement).scrollTo({
-                top: 0,
-                behavior: reduceMotion ? "auto" : "smooth",
-              });
-              history.replaceState(null, "", window.location.pathname + window.location.search);
-              setActiveSection("impacto");
-            }}
-          >
-            <Arrow />
-          </button>
+          <div className="footer-mark">
+            <img src={`${A}/footer-logo-mono.png`} alt="" aria-hidden="true" />
+            <button
+              type="button"
+              className="back-top"
+              aria-label="Voltar ao topo"
+              onClick={() => {
+                const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                (document.scrollingElement ?? document.documentElement).scrollTo({
+                  top: 0,
+                  behavior: reduceMotion ? "auto" : "smooth",
+                });
+                history.replaceState(null, "", window.location.pathname + window.location.search);
+                setActiveSection("impacto");
+              }}
+            >
+              <Arrow />
+            </button>
+          </div>
         </div>
         <div className="footer-bottom">
           <span>© 2026 Instituto Rugby Para Todos</span>
