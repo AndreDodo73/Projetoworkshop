@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import {
   awardsList,
   documents,
@@ -32,15 +32,32 @@ function Outbound({
   href,
   children,
   className = "text-link",
+  onMouseEnter,
+  onMouseLeave,
+  onFocus,
+  onBlur,
 }: {
   href: string;
   children: ReactNode;
   className?: string;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }) {
   const plainLabel = typeof children === "string" || typeof children === "number";
   const hideIcon = className.includes("social-channel");
   return (
-    <a href={href} className={className} target="_blank" rel="noopener noreferrer">
+    <a
+      href={href}
+      className={className}
+      target="_blank"
+      rel="noopener noreferrer"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onFocus={onFocus}
+      onBlur={onBlur}
+    >
       {plainLabel ? <span className="link-label">{children}</span> : children}
       {hideIcon ? null : <ExtIcon />}
     </a>
@@ -49,7 +66,6 @@ function Outbound({
 
 export function VideoStories({ language }: { language: SiteLanguage }) {
   const t = institutional[language];
-  const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
 
@@ -73,38 +89,10 @@ export function VideoStories({ language }: { language: SiteLanguage }) {
     setPlaying(false);
   };
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section || !window.matchMedia("(hover: none)").matches) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.45) {
-          playVideo();
-        } else {
-          stopVideo();
-        }
-      },
-      { threshold: [0, 0.45, 0.8] },
-    );
-
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <section
-      ref={sectionRef}
       className={`video-stories${playing ? " is-playing" : ""}`}
       aria-labelledby="video-stories-title"
-      onMouseEnter={playVideo}
-      onMouseLeave={stopVideo}
-      onFocusCapture={playVideo}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          stopVideo();
-        }
-      }}
     >
       <video
         ref={videoRef}
@@ -120,7 +108,14 @@ export function VideoStories({ language }: { language: SiteLanguage }) {
       <div className="video-stories-copy reveal">
         <p className="eyebrow light">{t.contentEyebrow}</p>
         <h2 id="video-stories-title">{t.videoTitle}</h2>
-        <Outbound className="pill light-pill" href={official.social[1].href}>
+        <Outbound
+          className="pill light-pill"
+          href={official.social[1].href}
+          onMouseEnter={playVideo}
+          onMouseLeave={stopVideo}
+          onFocus={playVideo}
+          onBlur={stopVideo}
+        >
           {t.videoCta}
         </Outbound>
       </div>
