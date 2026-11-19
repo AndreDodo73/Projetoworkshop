@@ -5,9 +5,9 @@
   "type": "module",
   "packageManager": "pnpm@10.14.0",
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 5174",
+    "dev": "vite --port 5174",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview --host 0.0.0.0 --port 4174",
+    "preview": "vite preview --port 4174",
     "format": "echo \"oxfmt: instalar com stack Make (pnpm + lockfile)\""
   },
   "dependencies": {
