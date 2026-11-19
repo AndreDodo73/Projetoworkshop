@@ -34,7 +34,7 @@ const copy = {
     heroBody:
       "Formamos atletas. Criamos oportunidades. Transformamos vidas por meio do esporte, da educação e da comunidade.",
     heroCta: "Conheça nossas histórias",
-    scroll: "Deslize para descobrir",
+    scroll: "Deslize para conhecer o RPT",
     sponsorTitle: "Quem acredita, transforma junto.",
     sponsorBody: "Patrocinadores e apoiadores que entram em campo com o Instituto RPT.",
     impactEyebrow: "O campo é só o começo",
@@ -90,7 +90,7 @@ const copy = {
     heroBody:
       "We develop athletes. We create opportunities. We transform lives through sport, education and community.",
     heroCta: "Meet our stories",
-    scroll: "Swipe to discover",
+    scroll: "Swipe to meet RPT",
     sponsorTitle: "Those who believe, transform with us.",
     sponsorBody: "Sponsors and supporters who take the field with Instituto RPT.",
     impactEyebrow: "The field is just the beginning",
@@ -145,7 +145,7 @@ const copy = {
     heroBody:
       "Nous formons des athlètes. Nous créons des opportunités. Nous transformons des vies par le sport, l'éducation et la communauté.",
     heroCta: "Découvrir nos histoires",
-    scroll: "Glissez pour découvrir",
+    scroll: "Glissez pour découvrir le RPT",
     sponsorTitle: "Ceux qui y croient transforment avec nous.",
     sponsorBody: "Sponsors et partenaires qui entrent sur le terrain avec l'Instituto RPT.",
     impactEyebrow: "Le terrain n'est que le début",
